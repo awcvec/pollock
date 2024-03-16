@@ -1,0 +1,53 @@
+[project]
+name = "pollock"
+version = "0.0"
+description = "Minimal LLM Training"
+authors = [
+    {name = "Awcvec", email="awcvec@gmail.com"},
+]
+readme = "README.md"
+requires-python = "~=3.10"
+classifiers = [
+    "Topic :: Software Development"
+]
+dependencies = [
+    "torch>=1.13.1",
+    "pyyaml",
+    "numpy",
+    "packaging",
+    "safetensors",
+    "dacite",
+    "tqdm"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]  # list of folders that contain the packages (["."] by default)
+
+[tool.ruff]
+line-length = 119
+ignore = ["C901","E501"] # E501 ignores length violation handled by black
+select = ["C","E","F","I","W"]
+ignore-init-module-imports = true
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+    "pylint"
+]
+
+test = [
+    "pytest",
+    "pytest-xdist"
+]
+
+fast-modeling = [
+    "flash-attn>=2.5.0",
+]
+
+[build-system]
+requires = [
+    "setuptools",
+]
+
+[pytest]
+norecursedirs="tests/helpers"
