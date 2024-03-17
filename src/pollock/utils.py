@@ -12,7 +12,7 @@ from packaging import version
 from torch import nn
 from torch.utils.checkpoint import checkpoint
 
-from nanotron import distributed as dist
+from pollcok import distributed as dist
 
 
 class ContextManagers:

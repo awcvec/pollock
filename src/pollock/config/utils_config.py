@@ -4,13 +4,13 @@ from pathlib import Path
 
 import torch
 
-from nanotron.generation.sampler import SamplerType
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.generation.sampler import SamplerType
+from pollcok.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     OneForwardOneBackwardPipelineEngine,
     PipelineEngine,
 )
-from nanotron.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
 
 
 class RecomputeGranularity(Enum):

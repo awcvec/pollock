@@ -10,23 +10,23 @@ import yaml
 from dacite import from_dict
 from yaml.loader import SafeLoader
 
-from nanotron.config.lighteval_config import LightEvalConfig
-from nanotron.config.models_config import (
+from pollcok.config.lighteval_config import LightEvalConfig
+from pollcok.config.models_config import (
     ExistingCheckpointInit,
-    NanotronConfigs,
+    pollcokConfigs,
     RandomInit,
 )
-from nanotron.config.parallelism_config import ParallelismArgs
-from nanotron.config.utils_config import (
+from pollcok.config.parallelism_config import ParallelismArgs
+from pollcok.config.utils_config import (
     RecomputeGranularity,
     cast_str_to_pipeline_engine,
     cast_str_to_torch_dtype,
     serialize,
 )
-from nanotron.generation.sampler import SamplerType
-from nanotron.logging import get_logger
-from nanotron.parallel.pipeline_parallel.engine import PipelineEngine
-from nanotron.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollcok.generation.sampler import SamplerType
+from pollcok.logging import get_logger
+from pollcok.parallel.pipeline_parallel.engine import PipelineEngine
+from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
 
 logger = get_logger(__name__)
 
@@ -155,8 +155,8 @@ class GeneralArgs:
             self.seed = DEFAULT_SEED
         if self.benchmark_csv_path is not None:
             assert (
-                os.environ.get("NANOTRON_BENCHMARK", None) is not None
-            ), f"Please set NANOTRON_BENCHMARK to 1 when using benchmark_csv_path. Got {os.environ.get('NANOTRON_BENCHMARK', None)}"
+                os.environ.get("pollcok_BENCHMARK", None) is not None
+            ), f"Please set pollcok_BENCHMARK to 1 when using benchmark_csv_path. Got {os.environ.get('pollcok_BENCHMARK', None)}"
 
         if self.run is None:
             self.run = "%date_%jobid"
@@ -175,7 +175,7 @@ class ProfilerArgs:
 class ModelArgs:
     """Arguments related to model architecture"""
 
-    model_config: NanotronConfigs
+    model_config: pollcokConfigs
     init_method: Union[RandomInit, ExistingCheckpointInit]
     dtype: Optional[torch.dtype] = None
     make_vocab_size_divisible_by: int = 1

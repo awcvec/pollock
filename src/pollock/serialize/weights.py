@@ -9,15 +9,15 @@ from safetensors.torch import safe_open, save_file
 from torch import nn
 from tqdm import tqdm
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.constants import CHECKPOINT_VERSION
-from nanotron.distributed import get_global_rank
-from nanotron.logging import log_rank
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter, ShardedInfo, SlicesPair
-from nanotron.serialize.metadata import CheckpointMetadata, TensorMetadata, load_meta
-from nanotron.serialize.utils import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.constants import CHECKPOINT_VERSION
+from pollcok.distributed import get_global_rank
+from pollcok.logging import log_rank
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter, ShardedInfo, SlicesPair
+from pollcok.serialize.metadata import CheckpointMetadata, TensorMetadata, load_meta
+from pollcok.serialize.utils import (
     ObjectType,
     extract_tp_pp_rank_from_shard_path,
     get_exp_tp_pp_rank_and_size_from,
@@ -55,7 +55,7 @@ def save_weights(model: nn.Module, parallel_context: ParallelContext, root_folde
             # TODO @nouamanetazi: Handle buffers
             param = None
 
-        if isinstance(param, NanotronParameter):
+        if isinstance(param, pollcokParameter):
             metadata = {}
             if param.is_tied:
                 tied_info = param.get_tied_info()
@@ -112,7 +112,7 @@ def save_weights(model: nn.Module, parallel_context: ParallelContext, root_folde
                 )
                 raise e
         else:
-            raise NotImplementedError("Parameters are required to be NanotronParameter")
+            raise NotImplementedError("Parameters are required to be pollcokParameter")
 
 
 class CheckpointVersionFromShardFileException(Exception):
@@ -229,7 +229,7 @@ def load_weights(
         except AttributeError:
             param = None
 
-        if isinstance(param, NanotronParameter):
+        if isinstance(param, pollcokParameter):
             if param.is_tied:
                 tied_info = param.get_tied_info()
                 base_name = tied_info.get_full_name_from_module_id_to_prefix(module_id_to_prefix=module_id_to_prefix)
@@ -323,7 +323,7 @@ def load_weights(
                     raise ValueError(f"Unsupported checkpoint version {checkpoint_version}")
 
         else:
-            raise NotImplementedError(f"Parameters {param} should be a NanotronParameter")
+            raise NotImplementedError(f"Parameters {param} should be a pollcokParameter")
 
     return param_shard_metadata
 
@@ -364,7 +364,7 @@ def get_checkpoint_paths_list(
         except AttributeError:
             param = None
 
-        if isinstance(param, NanotronParameter) or not only_list_current_process:
+        if isinstance(param, pollcokParameter) or not only_list_current_process:
             if param.is_tied:
                 tied_info = param.get_tied_info()
                 base_name = tied_info.get_full_name_from_module_id_to_prefix(module_id_to_prefix=module_id_to_prefix)

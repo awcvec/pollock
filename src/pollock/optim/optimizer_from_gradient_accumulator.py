@@ -3,16 +3,16 @@ from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Union
 
 import torch
 
-from nanotron.optim.base import BaseOptimizer
-from nanotron.optim.gradient_accumulator import GradientAccumulator
-from nanotron.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
-from nanotron.parallel.parameters import NanotronParameter
+from pollcok.optim.base import BaseOptimizer
+from pollcok.optim.gradient_accumulator import GradientAccumulator
+from pollcok.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
+from pollcok.parallel.parameters import pollcokParameter
 
 
 class OptimizerFromGradientAccumulator(InheritFromOtherOptimizer):
     def __init__(
         self,
-        gradient_accumulator_builder: Callable[[Iterable[Tuple[str, NanotronParameter]]], GradientAccumulator],
+        gradient_accumulator_builder: Callable[[Iterable[Tuple[str, pollcokParameter]]], GradientAccumulator],
         named_params_or_groups: Iterable[Union[Tuple[str, torch.Tensor], Dict[str, Any]]],
         optimizer_builder: Callable[[Iterable[Dict[str, Any]]], BaseOptimizer],
     ):

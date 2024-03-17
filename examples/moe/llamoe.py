@@ -25,26 +25,26 @@ from flash_attn.flash_attn_interface import (
 )
 from flash_attn.layers.rotary import RotaryEmbedding as FlashRotaryEmbedding
 from moe import dMoE
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import ParallelismArgs
-from nanotron.generation.generate_store import AttachableStore
-from nanotron.logging import log_rank
-from nanotron.models import NanotronModel
-from nanotron.nn.layer_norm import TritonRMSNorm
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
-from nanotron.parallel.pipeline_parallel.p2p import P2P
-from nanotron.parallel.tensor_parallel.functional import sharded_cross_entropy
-from nanotron.parallel.tensor_parallel.nn import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import ParallelismArgs
+from pollcok.generation.generate_store import AttachableStore
+from pollcok.logging import log_rank
+from pollcok.models import pollcokModel
+from pollcok.nn.layer_norm import TritonRMSNorm
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
+from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollcok.parallel.tensor_parallel.functional import sharded_cross_entropy
+from pollcok.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelEmbedding,
     TensorParallelLinearMode,
     TensorParallelRowLinear,
 )
-from nanotron.random import RandomStates
-from nanotron.utils import checkpoint_method
+from pollcok.random import RandomStates
+from pollcok.utils import checkpoint_method
 from torch import nn
 from torch.nn import init
 
@@ -788,7 +788,7 @@ class Loss(nn.Module):
         return {"loss": loss}
 
 
-class LlaMoEForTraining(NanotronModel):
+class LlaMoEForTraining(pollcokModel):
     def __init__(
         self,
         config: LlaMoEConfig,
@@ -849,7 +849,7 @@ class LlaMoEForTraining(NanotronModel):
         num_layers = config.model.model_config.num_hidden_layers
 
         for param_name, param in model.named_parameters():
-            assert isinstance(param, NanotronParameter)
+            assert isinstance(param, pollcokParameter)
 
             module_name, param_name = param_name.rsplit(".", 1)
 

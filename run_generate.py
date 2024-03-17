@@ -1,5 +1,5 @@
 """
-Nanotron Inference Script
+pollcok Inference Script
 
 Usage:
 ```
@@ -13,37 +13,37 @@ import os
 from pathlib import Path
 
 import torch
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import (
     GenerationArgs,
     LoggingArgs,
     ParallelismArgs,
     get_config_from_file,
 )
-from nanotron.generation.decode import (
+from pollcok.generation.decode import (
     GenerationInput,
     TokenizerConfig,
     decode_text,
     decode_tokenized,
 )
-from nanotron.logging import log_rank, set_ranks_logging_level
-from nanotron.models import build_model
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import sanity_check
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.logging import log_rank, set_ranks_logging_level
+from pollcok.models import build_model
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import sanity_check
+from pollcok.parallel.pipeline_parallel.engine import (
     OneForwardOneBackwardPipelineEngine,
 )
-from nanotron.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from nanotron.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from nanotron.random import (
+from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollcok.random import (
     RandomStates,
     get_current_random_state,
     get_synced_random_state,
     set_random_seed,
 )
-from nanotron.serialize import load_weights
-from nanotron.trainer import CONFIG_TO_MODEL_CLASS, mark_tied_parameters
+from pollcok.serialize import load_weights
+from pollcok.trainer import CONFIG_TO_MODEL_CLASS, mark_tied_parameters
 
 try:
     from transformers import AutoTokenizer
@@ -132,7 +132,7 @@ def main():
     )
 
     # Mark some parameters as tied
-    # TODO @nouamane: this is only needed for training, can we just mark params as NanotronParameter instead?
+    # TODO @nouamane: this is only needed for training, can we just mark params as pollcokParameter instead?
     mark_tied_parameters(model=model, parallel_context=parallel_context, parallel_config=parallel_config)
 
     # Sanity check model

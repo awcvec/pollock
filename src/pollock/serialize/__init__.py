@@ -1,4 +1,4 @@
 # flake8: noqa
-from nanotron.serialize.main import *
-from nanotron.serialize.optimizer import *
-from nanotron.serialize.random import *
+from pollcok.serialize.main import *
+from pollcok.serialize.optimizer import *
+from pollcok.serialize.random import *

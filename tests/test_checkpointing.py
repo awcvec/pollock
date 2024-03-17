@@ -1,8 +1,8 @@
 from typing import Union
 
 import torch
-from nanotron.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from nanotron.utils import checkpoint_method
+from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollcok.utils import checkpoint_method
 from torch import nn
 
 

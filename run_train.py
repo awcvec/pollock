@@ -1,5 +1,5 @@
 """
-Nanotron training script.
+pollcok training script.
 
 Usage:
 ```
@@ -9,20 +9,20 @@ torchrun --nproc_per_node=8 run_train.py --config-file examples/config_tiny_llam
 """
 import argparse
 
-from nanotron import logging
-from nanotron.config import (
+from pollcok import logging
+from pollcok.config import (
     PretrainDatasetsArgs,
 )
-from nanotron.dataloader import (
+from pollcok.dataloader import (
     clm_process,
     dummy_infinite_data_generator,
     get_datasets,
     get_train_dataloader,
 )
-from nanotron.logging import log_rank
-from nanotron.parallel.pipeline_parallel.utils import get_input_output_pp_ranks
-from nanotron.trainer import DistributedTrainer
-from nanotron.utils import (
+from pollcok.logging import log_rank
+from pollcok.parallel.pipeline_parallel.utils import get_input_output_pp_ranks
+from pollcok.trainer import DistributedTrainer
+from pollcok.utils import (
     main_rank_first,
 )
 

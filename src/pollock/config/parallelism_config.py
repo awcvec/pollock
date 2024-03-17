@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from nanotron.config.utils_config import (
+from pollcok.config.utils_config import (
     cast_str_to_pipeline_engine,
 )
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     PipelineEngine,
 )
-from nanotron.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
 
 
 @dataclass

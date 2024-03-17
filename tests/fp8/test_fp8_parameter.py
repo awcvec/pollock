@@ -1,6 +1,6 @@
 import torch
-from nanotron.fp8 import DTypes, FP8Parameter, FP8Tensor
-from nanotron.fp8.meta import FP8Meta
+from pollcok.fp8 import DTypes, FP8Parameter, FP8Tensor
+from pollcok.fp8.meta import FP8Meta
 
 
 def test_create_fp8_parameter():

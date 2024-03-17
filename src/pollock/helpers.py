@@ -16,27 +16,27 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import LambdaLR
 from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import Config, LRSchedulerArgs, OptimizerArgs, ParallelismArgs
-from nanotron.distributed import ProcessGroup
-from nanotron.logging import LogItem, log_rank
-from nanotron.models.base import NanotronModel
-from nanotron.optim.base import BaseOptimizer, Optimizer
-from nanotron.optim.gradient_accumulator import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import Config, LRSchedulerArgs, OptimizerArgs, ParallelismArgs
+from pollcok.distributed import ProcessGroup
+from pollcok.logging import LogItem, log_rank
+from pollcok.models.base import pollcokModel
+from pollcok.optim.base import BaseOptimizer, Optimizer
+from pollcok.optim.gradient_accumulator import (
     FP32GradBucketManager,
     FP32GradientAccumulator,
     GradientAccumulator,
     get_fp32_accum_hook,
 )
-from nanotron.optim.named_optimizer import NamedOptimizer
-from nanotron.optim.optimizer_from_gradient_accumulator import (
+from pollcok.optim.named_optimizer import NamedOptimizer
+from pollcok.optim.optimizer_from_gradient_accumulator import (
     OptimizerFromGradientAccumulator,
 )
-from nanotron.optim.zero import ZeroDistributedOptimizer
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.tensor_parallel.nn import TensorParallelLinearMode
-from nanotron.random import (
+from pollcok.optim.zero import ZeroDistributedOptimizer
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollcok.random import (
     RandomStates,
     get_current_random_state,
     get_synced_random_state,
@@ -153,7 +153,7 @@ def init_optimizer_and_grad_accumulator(
     model: nn.Module, optimizer_args: OptimizerArgs, parallel_context: ParallelContext
 ) -> Tuple[BaseOptimizer, GradientAccumulator]:
     # Unwrap DDP
-    unwrapped_model: NanotronModel = model.module if isinstance(model, DistributedDataParallel) else model
+    unwrapped_model: pollcokModel = model.module if isinstance(model, DistributedDataParallel) else model
 
     module_id_to_prefix = {id(module): f"{module_name}." for module_name, module in unwrapped_model.named_modules()}
     # Fix the root_model

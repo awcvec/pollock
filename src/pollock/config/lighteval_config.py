@@ -2,9 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Union
 
-from nanotron.config.parallelism_config import ParallelismArgs
-from nanotron.generation.sampler import SamplerType
-from nanotron.logging import get_logger
+from pollcok.config.parallelism_config import ParallelismArgs
+from pollcok.generation.sampler import SamplerType
+from pollcok.logging import get_logger
 
 logger = get_logger(__name__)
 

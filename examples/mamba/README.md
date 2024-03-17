@@ -1,10 +1,10 @@
 ---
-library_name: nanotron
+library_name: pollcok
 ---
 
 # Mamba
 
-Modeling code for Mamba to use with [Nanotron](https://github.com/huggingface/nanotron/)
+Modeling code for Mamba to use with [pollcok](https://github.com/huggingface/pollcok/)
 
 ## 🚀 Quickstart
 

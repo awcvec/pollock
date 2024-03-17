@@ -5,9 +5,9 @@ from typing import List, Optional, Tuple
 
 import torch
 
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import SlicesPair
-from nanotron.serialize.metadata import TensorMetadata
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import SlicesPair
+from pollcok.serialize.metadata import TensorMetadata
 
 
 class ObjectType(Enum):

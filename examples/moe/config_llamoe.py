@@ -1,9 +1,9 @@
-""" Example python script to generate a YAML config file which can be used to run a training with nanotron. Refer to "examples" section in the `/README.md` for more information."""
+""" Example python script to generate a YAML config file which can be used to run a training with pollcok. Refer to "examples" section in the `/README.md` for more information."""
 import os
 from dataclasses import dataclass
 from typing import Optional
 
-from nanotron.config import (
+from pollcok.config import (
     CheckpointsArgs,
     Config,
     DataArgs,
@@ -17,8 +17,8 @@ from nanotron.config import (
     TokenizerArgs,
     TokensArgs,
 )
-from nanotron.config.config import PretrainDatasetsArgs
-from nanotron.logging import human_format
+from pollcok.config.config import PretrainDatasetsArgs
+from pollcok.logging import human_format
 
 
 @dataclass

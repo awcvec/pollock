@@ -24,25 +24,25 @@ import torch.nn as nn
 import torch.nn.functional as F
 from config import MambaModelConfig
 from einops import rearrange, repeat
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import ParallelismArgs
-from nanotron.config.utils_config import cast_str_to_torch_dtype
-from nanotron.generation.generate_store import AttachableStore
-from nanotron.logging import log_rank
-from nanotron.models import NanotronModel
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
-from nanotron.parallel.pipeline_parallel.p2p import P2P
-from nanotron.parallel.tensor_parallel.functional import sharded_cross_entropy
-from nanotron.parallel.tensor_parallel.nn import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import ParallelismArgs
+from pollcok.config.utils_config import cast_str_to_torch_dtype
+from pollcok.generation.generate_store import AttachableStore
+from pollcok.logging import log_rank
+from pollcok.models import pollcokModel
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
+from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollcok.parallel.tensor_parallel.functional import sharded_cross_entropy
+from pollcok.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelEmbedding,
     TensorParallelLinearMode,
     TensorParallelRowLinear,
 )
-from nanotron.random import RandomStates
+from pollcok.random import RandomStates
 from selective_scan_interface import mamba_inner_fn, selective_scan_fn
 from torch.nn import init
 
@@ -732,7 +732,7 @@ class Loss(nn.Module):
         return {"loss": loss}
 
 
-class MambaForTraining(NanotronModel):
+class MambaForTraining(pollcokModel):
     def __init__(
         self,
         config: MambaModelConfig,
@@ -804,7 +804,7 @@ class MambaForTraining(NanotronModel):
             dt_scale = config.model.model_config.ssm_cfg["dt_scale"]
 
         for param_name, param in model.named_parameters():
-            assert isinstance(param, NanotronParameter)
+            assert isinstance(param, pollcokParameter)
 
             module_name, param_name = param_name.rsplit(".", 1)
 

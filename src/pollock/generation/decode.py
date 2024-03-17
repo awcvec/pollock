@@ -5,21 +5,21 @@ from typing import TYPE_CHECKING, Generator, Iterable, List, Optional, Tuple, Un
 
 import torch
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import BenchArgs, GenerationArgs
-from nanotron.distributed import ProcessGroup, get_global_rank
-from nanotron.generation.generate_store import Store, attach_store
-from nanotron.generation.sampler import BasicSampler, GreedySampler, SamplerType, TopKSampler, TopPSampler
-from nanotron.helpers import log_throughput
-from nanotron.models.llama import LlamaModel
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.pipeline_parallel.block import get_min_max_rank
-from nanotron.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
-from nanotron.parallel.pipeline_parallel.p2p import P2PTensorMetaData, view_as_contiguous
-from nanotron.parallel.pipeline_parallel.state import PipelineEvalBatchState
-from nanotron.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from nanotron.utils import get_untyped_storage
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import BenchArgs, GenerationArgs
+from pollcok.distributed import ProcessGroup, get_global_rank
+from pollcok.generation.generate_store import Store, attach_store
+from pollcok.generation.sampler import BasicSampler, GreedySampler, SamplerType, TopKSampler, TopPSampler
+from pollcok.helpers import log_throughput
+from pollcok.models.llama import LlamaModel
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.pipeline_parallel.block import get_min_max_rank
+from pollcok.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
+from pollcok.parallel.pipeline_parallel.p2p import P2PTensorMetaData, view_as_contiguous
+from pollcok.parallel.pipeline_parallel.state import PipelineEvalBatchState
+from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollcok.utils import get_untyped_storage
 
 if TYPE_CHECKING:
     try:

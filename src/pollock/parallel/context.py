@@ -4,7 +4,7 @@ from typing import Literal, Tuple
 import numpy as np
 import torch
 
-import nanotron.distributed as dist
+import pollcok.distributed as dist
 
 DistributedBackend = Literal["gloo", "mpi", "nccl"]
 

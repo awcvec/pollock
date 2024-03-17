@@ -34,11 +34,11 @@ from typing import TYPE_CHECKING, List, Optional, Union
 import torch
 from torch import distributed as torch_dist
 
-from nanotron import distributed as dist
+from pollcok import distributed as dist
 
 if TYPE_CHECKING:
-    from nanotron.config import LoggingArgs
-from nanotron.parallel import ParallelContext
+    from pollcok.config import LoggingArgs
+from pollcok.parallel import ParallelContext
 
 log_levels = {
     "debug": DEBUG,
@@ -71,16 +71,16 @@ LIBRARY_NAME = __name__.split(".")[0]
 
 def _get_default_logging_level():
     """
-    If NANOTRON_LOGGING_LEVEL env var is set to one of the valid choices return that as the new default level. If it is
+    If pollcok_LOGGING_LEVEL env var is set to one of the valid choices return that as the new default level. If it is
     not - fall back to ``_default_log_level``
     """
-    env_level_str = os.getenv("NANOTRON_LOGGING_LEVEL", None)
+    env_level_str = os.getenv("pollcok_LOGGING_LEVEL", None)
     if env_level_str:
         if env_level_str in log_levels:
             return log_levels[env_level_str]
         else:
             logging.getLogger().warning(
-                f"Unknown option NANOTRON_LOGGING_LEVEL={env_level_str}, "
+                f"Unknown option pollcok_LOGGING_LEVEL={env_level_str}, "
                 f"has to be one of: { ', '.join(log_levels.keys()) }"
             )
     return DEFAULT_LOG_LEVEL
@@ -112,7 +112,7 @@ def get_logger(name: Optional[str] = None, log_level: Optional[str] = None) -> L
         # if name is None we return root logger
         return logger
 
-    # If the logger is in a `nanotron` module then we remove the capability to propagate
+    # If the logger is in a `pollcok` module then we remove the capability to propagate
     if LIBRARY_NAME == name.split(".", 1)[0]:
         if log_level is not None:
             logger.setLevel(log_level.upper())
@@ -131,16 +131,16 @@ def get_logger(name: Optional[str] = None, log_level: Optional[str] = None) -> L
 
 def get_verbosity() -> int:
     """
-    Return the current level for the Nanotron root logger as an int.
+    Return the current level for the pollcok root logger as an int.
     Returns:
         :obj:`int`: The logging level.
     .. note::
-        Nanotron has following logging levels:
-        - 50: ``nanotron.logging.CRITICAL`` or ``nanotron.logging.FATAL``
-        - 40: ``nanotron.logging.ERROR``
-        - 30: ``nanotron.logging.WARNING`` or ``nanotron.logging.WARN``
-        - 20: ``nanotron.logging.INFO``
-        - 10: ``nanotron.logging.DEBUG``
+        pollcok has following logging levels:
+        - 50: ``pollcok.logging.CRITICAL`` or ``pollcok.logging.FATAL``
+        - 40: ``pollcok.logging.ERROR``
+        - 30: ``pollcok.logging.WARNING`` or ``pollcok.logging.WARN``
+        - 20: ``pollcok.logging.INFO``
+        - 10: ``pollcok.logging.DEBUG``
     """
 
     return get_library_root_logger().getEffectiveLevel()
@@ -151,23 +151,23 @@ LEVEL = None
 
 def set_verbosity(verbosity: int) -> None:
     """
-    Set the verbosity level for the all `nanotron` loggers.
+    Set the verbosity level for the all `pollcok` loggers.
 
     Args:
         verbosity (:obj:`int`):
             Logging level, e.g., one of:
-            - ``nanotron.logging.CRITICAL`` or ``nanotron.logging.FATAL``
-            - ``nanotron.logging.ERROR``
-            - ``nanotron.logging.WARNING`` or ``nanotron.logging.WARN``
-            - ``nanotron.logging.INFO``
-            - ``nanotron.logging.DEBUG``
+            - ``pollcok.logging.CRITICAL`` or ``pollcok.logging.FATAL``
+            - ``pollcok.logging.ERROR``
+            - ``pollcok.logging.WARNING`` or ``pollcok.logging.WARN``
+            - ``pollcok.logging.INFO``
+            - ``pollcok.logging.DEBUG``
     """
-    all_nanotron_loggers = {
+    all_pollcok_loggers = {
         name: logger
         for name, logger in logging.root.manager.loggerDict.items()
         if isinstance(logger, Logger) and (name.startswith(f"{LIBRARY_NAME}.") or name == LIBRARY_NAME)
     }
-    for name, logger in all_nanotron_loggers.items():
+    for name, logger in all_pollcok_loggers.items():
         logger.setLevel(verbosity)
 
         # We update all handles to be at the current verbosity as well.
@@ -194,12 +194,12 @@ def set_formatter(formatter: logging.Formatter) -> None:
     handler.setLevel(get_verbosity())
     handler.flush = sys.stderr.flush
 
-    all_nanotron_loggers = {
+    all_pollcok_loggers = {
         name: logger
         for name, logger in logging.root.manager.loggerDict.items()
         if isinstance(logger, Logger) and (name.startswith(f"{LIBRARY_NAME}.") or name == LIBRARY_NAME)
     }
-    for name, logger in all_nanotron_loggers.items():
+    for name, logger in all_pollcok_loggers.items():
         # We keep only a single handler
         logger.handlers.clear()
         logger.addHandler(handler)
@@ -306,7 +306,7 @@ def set_logger_verbosity_format(logging_level: str, parallel_context: ParallelCo
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
 
-    # Nanotron
+    # pollcok
     set_verbosity(log_level)
     set_formatter(formatter=formatter)
 

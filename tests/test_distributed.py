@@ -7,7 +7,7 @@ from helpers.utils import (
     init_distributed,
     rerun_if_address_is_in_use,
 )
-from nanotron.parallel import ParallelContext
+from pollcok.parallel import ParallelContext
 from torch.distributed import ProcessGroup
 
 

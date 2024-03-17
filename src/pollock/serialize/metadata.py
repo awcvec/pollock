@@ -8,10 +8,10 @@ import torch
 from dacite import from_dict
 from packaging.version import Version
 
-from nanotron import distributed as dist
-from nanotron.constants import CHECKPOINT_VERSION
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import SlicesPair
+from pollcok import distributed as dist
+from pollcok.constants import CHECKPOINT_VERSION
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import SlicesPair
 
 
 @dataclasses.dataclass
@@ -113,5 +113,5 @@ def load_meta(parallel_context: ParallelContext, root_folder: Path) -> Checkpoin
         # Assume that we're always backward compatible, we only increment CHECKPOINT_VERSION when there's a breaking change.
         assert (
             checkpoint_metadata.version <= CHECKPOINT_VERSION
-        ), f"Checkpoint is of version {checkpoint_metadata.version}, Current `nanotron` checkpoint version is {CHECKPOINT_VERSION}"
+        ), f"Checkpoint is of version {checkpoint_metadata.version}, Current `pollcok` checkpoint version is {CHECKPOINT_VERSION}"
     return checkpoint_metadata

@@ -3,13 +3,13 @@ from typing import Dict, List, Optional, Tuple
 
 from torch import nn
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.logging import log_rank
-from nanotron.optim.gradient_accumulator import GradientAccumulator
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.utils import get_parameter_and_parent_module
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.logging import log_rank
+from pollcok.optim.gradient_accumulator import GradientAccumulator
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.utils import get_parameter_and_parent_module
 
 logger = logging.get_logger(__name__)
 
@@ -20,9 +20,9 @@ def create_tied_parameter(
     global_ranks: Tuple[int, ...],
     reduce_op: Optional[dist.ReduceOp],
     root_module: nn.Module,
-) -> NanotronParameter:
-    if not isinstance(parameter, NanotronParameter):
-        parameter = NanotronParameter(tensor=parameter)
+) -> pollcokParameter:
+    if not isinstance(parameter, pollcokParameter):
+        parameter = pollcokParameter(tensor=parameter)
     parameter.mark_as_tied(name=name, global_ranks=global_ranks, reduce_op=reduce_op, root_module=root_module)
     return parameter
 
@@ -86,7 +86,7 @@ def create_pg_for_tied_weights(root_module: nn.Module, parallel_context: Paralle
     group_ranks = {
         param.get_tied_info().global_ranks
         for name, param in root_module.named_parameters()
-        if isinstance(param, NanotronParameter) and param.is_tied
+        if isinstance(param, pollcokParameter) and param.is_tied
     }
 
     world_group_ranks = [None] * parallel_context.world_pg.size()
@@ -101,8 +101,8 @@ def create_pg_for_tied_weights(root_module: nn.Module, parallel_context: Paralle
 
 
 def get_tied_id_to_param(
-    parameters: List[NanotronParameter], root_module: nn.Module
-) -> Dict[Tuple[str, Tuple[int, ...]], NanotronParameter]:
+    parameters: List[pollcokParameter], root_module: nn.Module
+) -> Dict[Tuple[str, Tuple[int, ...]], pollcokParameter]:
     module_id_to_prefix = {id(module): f"{module_name}." for module_name, module in root_module.named_modules()}
     # Fix the root_model
     module_id_to_prefix[id(root_module)] = ""
@@ -117,7 +117,7 @@ def get_tied_id_to_param(
 
 
 def sync_tied_weights_gradients(
-    module: nn.Module,  # TODO: NanotronModel
+    module: nn.Module,  # TODO: pollcokModel
     parallel_context: ParallelContext,
     grad_accumulator: Optional[GradientAccumulator],
 ):

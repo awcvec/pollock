@@ -2,17 +2,17 @@ from math import ceil
 from typing import Union
 
 import torch
-from nanotron import distributed as dist
-from nanotron.models import init_on_device_and_dtype
-from nanotron.optim.base import BaseOptimizer
-from nanotron.optim.named_optimizer import NamedOptimizer
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.parallel.pipeline_parallel.block import PipelineBlock
-from nanotron.parallel.pipeline_parallel.p2p import P2P
-from nanotron.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from nanotron.parallel.tied_parameters import tie_parameters
-from nanotron.parallel.utils import initial_sync
+from pollcok import distributed as dist
+from pollcok.models import init_on_device_and_dtype
+from pollcok.optim.base import BaseOptimizer
+from pollcok.optim.named_optimizer import NamedOptimizer
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.parallel.pipeline_parallel.block import PipelineBlock
+from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollcok.parallel.tied_parameters import tie_parameters
+from pollcok.parallel.utils import initial_sync
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel
 
@@ -78,7 +78,7 @@ def init_dummy_model(parallel_context: ParallelContext, dtype: torch.dtype = tor
 
     # Sync all parameters that have the same name and that are not sharded across TP.
     for name, param in model.named_parameters():
-        if isinstance(param, NanotronParameter) and param.is_sharded:
+        if isinstance(param, pollcokParameter) and param.is_sharded:
             continue
         shared_weights = [
             (

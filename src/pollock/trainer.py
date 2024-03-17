@@ -21,17 +21,17 @@ from typing import (
 import torch
 from torch.nn.parallel import DistributedDataParallel
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import (
     Config,
     ExistingCheckpointInit,
     ParallelismArgs,
     RandomInit,
     get_config_from_file,
 )
-from nanotron.dataloader import sanity_check_dataloader
-from nanotron.helpers import (
+from pollcok.dataloader import sanity_check_dataloader
+from pollcok.helpers import (
     _vocab_size_with_padding,
     get_profiler,
     init_optimizer_and_grad_accumulator,
@@ -39,7 +39,7 @@ from nanotron.helpers import (
     log_throughput,
     lr_scheduler_builder,
 )
-from nanotron.logging import (
+from pollcok.logging import (
     LoggerWriter,
     LogItem,
     human_format,
@@ -47,35 +47,35 @@ from nanotron.logging import (
     log_rank,
     set_ranks_logging_level,
 )
-from nanotron.models import NanotronModel, build_model
-from nanotron.models.base import check_model_has_grad
-from nanotron.models.llama import LlamaForTraining, RotaryEmbedding
-from nanotron.models.starcoder2 import Starcoder2ForTraining
-from nanotron.optim.clip_grads import clip_grad_norm
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.data_parallel.utils import sync_gradients_across_dp
-from nanotron.parallel.parameters import NanotronParameter, sanity_check
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.models import pollcokModel, build_model
+from pollcok.models.base import check_model_has_grad
+from pollcok.models.llama import LlamaForTraining, RotaryEmbedding
+from pollcok.models.starcoder2 import Starcoder2ForTraining
+from pollcok.optim.clip_grads import clip_grad_norm
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.data_parallel.utils import sync_gradients_across_dp
+from pollcok.parallel.parameters import pollcokParameter, sanity_check
+from pollcok.parallel.pipeline_parallel.engine import (
     PipelineEngine,
     TensorPointer,
 )
-from nanotron.parallel.pipeline_parallel.utils import get_pp_rank_of
-from nanotron.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from nanotron.parallel.tensor_parallel.nn import TensorParallelRowLinear
-from nanotron.parallel.tied_parameters import (
+from pollcok.parallel.pipeline_parallel.utils import get_pp_rank_of
+from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollcok.parallel.tensor_parallel.nn import TensorParallelRowLinear
+from pollcok.parallel.tied_parameters import (
     create_pg_for_tied_weights,
     get_tied_id_to_param,
     sync_tied_weights_gradients,
     tie_parameters,
 )
-from nanotron.random import set_random_seed
-from nanotron.sanity_checks import (
+from pollcok.random import set_random_seed
+from pollcok.sanity_checks import (
     after_optim_step_sanity_checks,
     after_tbi_sanity_checks,
     before_optim_step_sanity_checks,
     before_tbi_sanity_checks,
 )
-from nanotron.serialize import (
+from pollcok.serialize import (
     load_lr_scheduler,
     load_meta,
     load_weights,
@@ -83,7 +83,7 @@ from nanotron.serialize import (
     save,
     save_random_states,
 )
-from nanotron.serialize.optimizer import load_optimizer
+from pollcok.serialize.optimizer import load_optimizer
 
 logger = logging.get_logger(__name__)
 
@@ -108,16 +108,16 @@ class DistributedTrainer:
         config_or_config_file: Union[Config, str],
         config_class: Type[Config] = Config,
         model_config_class: Optional[Type] = None,
-        model_class: Type[NanotronModel] = None,
+        model_class: Type[pollcokModel] = None,
     ):
         """
-        Nanotron's distributed trainer.
+        pollcok's distributed trainer.
 
         Args:
             config_or_config_file: Either a `Config` object or a path to a YAML file containing the config.
             config_class: The `Config` class to use.
             model_config_class: The `ModelConfig` class to use (for example `LlamaConfig`). Defaults to `None` which will use the model config class defined in the config.
-            model_class: The `NanotronModel` class to use (for example `LlamaForTraining`). Defaults to `None` which will use the model class defined in the config.
+            model_class: The `pollcokModel` class to use (for example `LlamaForTraining`). Defaults to `None` which will use the model class defined in the config.
         """
 
         super().__init__()
@@ -146,7 +146,7 @@ class DistributedTrainer:
         set_ranks_logging_level(parallel_context=self.parallel_context, logging_config=self.config.logging)
 
         # Log benchmark info
-        if os.environ.get("NANOTRON_BENCHMARK", "0") == "1":
+        if os.environ.get("pollcok_BENCHMARK", "0") == "1":
             log_throughput(self.config, self.parallel_context)
 
         ########################################
@@ -161,7 +161,7 @@ class DistributedTrainer:
             parallel_config=self.config.parallelism, tp_pg=self.parallel_context.tp_pg
         )
         self.model = self.init_model()  # Defines self.model
-        self.unwrapped_model: NanotronModel = (
+        self.unwrapped_model: pollcokModel = (
             self.model.module if isinstance(self.model, DistributedDataParallel) else self.model
         )
 
@@ -237,7 +237,7 @@ class DistributedTrainer:
             wandb.init(
                 project=self.config.general.project,
                 name=f"{current_time}_{self.config.general.project}_{self.config.general.run}",
-                config={"nanotron_config": self.config.as_dict()},
+                config={"pollcok_config": self.config.as_dict()},
             )
 
     def post_train_step(self):
@@ -481,8 +481,8 @@ class DistributedTrainer:
 
             self.loggerwriter.add_scalars_from_list(log_entries, self.iteration_step)
 
-        # Nanotron Benchmark mode: we log the throughput and exit
-        if os.environ.get("NANOTRON_BENCHMARK", "0") == "1" and self.iteration_step == 3:
+        # pollcok Benchmark mode: we log the throughput and exit
+        if os.environ.get("pollcok_BENCHMARK", "0") == "1" and self.iteration_step == 3:
             log_throughput(
                 self.config,
                 self.parallel_context,
@@ -496,7 +496,7 @@ class DistributedTrainer:
             else:
                 exit(0)
 
-    def init_model(self) -> Union[NanotronModel, DistributedDataParallel]:
+    def init_model(self) -> Union[pollcokModel, DistributedDataParallel]:
         """Initialize the model and load weights from checkpoint if needed."""
         # TODO: add max_position_embeddings
         self.model_config.vocab_size = _vocab_size_with_padding(
@@ -532,7 +532,7 @@ class DistributedTrainer:
         model = self._load_model_checkpoint(model)
         return model
 
-    def _init_model_instance(self) -> NanotronModel:
+    def _init_model_instance(self) -> pollcokModel:
         model_config_cls = self.model_config.__class__.__name__
         assert (
             model_config_cls in CONFIG_TO_MODEL_CLASS
@@ -548,7 +548,7 @@ class DistributedTrainer:
         )
         return model
 
-    def _load_model_checkpoint(self, model: NanotronModel) -> NanotronModel:
+    def _load_model_checkpoint(self, model: pollcokModel) -> pollcokModel:
         unwrapped_model = model.module if isinstance(model, DistributedDataParallel) else model
 
         # Load or initialize model weights
@@ -596,9 +596,9 @@ class DistributedTrainer:
 
     def _init_model(
         self,
-        model_builder: Callable[[], NanotronModel],
+        model_builder: Callable[[], pollcokModel],
         target_pp_ranks: Optional[List[int]] = None,
-    ) -> NanotronModel:
+    ) -> pollcokModel:
         config = self.config
         parallel_context = self.parallel_context
 
@@ -671,7 +671,7 @@ class DistributedTrainer:
                 bucket_cap_mb=config.model.ddp_bucket_cap_mb,
             )
 
-        # Sanity check the model, all parameters must be NanotronParameter (either tied or sharded)
+        # Sanity check the model, all parameters must be pollcokParameter (either tied or sharded)
         sanity_check(root_module=model)
 
         return model
@@ -760,7 +760,7 @@ class DistributedTrainer:
 
     def _mark_tied_parameters(
         self,
-        model: NanotronModel,
+        model: pollcokModel,
         parallel_context: ParallelContext,
         parallel_config: Optional[ParallelismArgs] = None,
     ):
@@ -768,7 +768,7 @@ class DistributedTrainer:
 
 
 def mark_tied_parameters(
-    model: NanotronModel, parallel_context: ParallelContext, parallel_config: Optional[ParallelismArgs] = None
+    model: pollcokModel, parallel_context: ParallelContext, parallel_config: Optional[ParallelismArgs] = None
 ):
     # Tie embeddings
     embeddings_lm_head_tied_names = model.get_embeddings_lm_head_tied_names()
@@ -803,13 +803,13 @@ def mark_tied_parameters(
 
 
 def mark_unsharded_params_as_tied_across_tp(
-    model: NanotronModel, parallel_context: ParallelContext, parallel_config: "ParallelismArgs"
+    model: pollcokModel, parallel_context: ParallelContext, parallel_config: "ParallelismArgs"
 ):
     for module_name, module in model.named_modules():
         for param_name, param in module.named_parameters(recurse=False):
             name = f"{module_name}.{param_name}"
 
-            if isinstance(param, NanotronParameter):
+            if isinstance(param, pollcokParameter):
                 # We skip tying if param already tied or sharded along tp
                 if param.is_tied:
                     continue
@@ -844,13 +844,13 @@ def mark_unsharded_params_as_tied_across_tp(
 
 
 def mark_unsharded_params_as_tied_across_expert(
-    model: NanotronModel, parallel_context: ParallelContext, parallel_config: "ParallelismArgs"
+    model: pollcokModel, parallel_context: ParallelContext, parallel_config: "ParallelismArgs"
 ):
     for module_name, module in model.named_modules():
         for param_name, param in module.named_parameters(recurse=False):
             name = f"{module_name}.{param_name}"
 
-            if isinstance(param, NanotronParameter):
+            if isinstance(param, pollcokParameter):
                 # We skip tying if param already tied or sharded along expert
                 if param.is_tied:
                     continue

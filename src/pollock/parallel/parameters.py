@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 import torch
 from torch import nn
 
-from nanotron import distributed as dist
-from nanotron import logging
+from pollcok import distributed as dist
+from pollcok import logging
 
 if TYPE_CHECKING:
-    from nanotron.models import NanotronModel
+    from pollcok.models import pollcokModel
 
 logger = logging.get_logger(__name__)
 
@@ -92,10 +92,10 @@ class ShardedInfo:
         return set(dist.get_global_ranks(parallel_context.dp_pg)).issubset(set(self.global_ranks))
 
 
-class NanotronParameter(nn.Parameter):
-    """Base class for all parameters in Nanotronmodels
+class pollcokParameter(nn.Parameter):
+    """Base class for all parameters in pollcokmodels
 
-    A NanotronParameter can have specific properties:
+    A pollcokParameter can have specific properties:
      - sharded: the parameter is considered to be `sharded` across multiple devices
      - tied: the parameter is considered to be `tied` with other parameters. We sum gradients over those.
 
@@ -107,29 +107,29 @@ class NanotronParameter(nn.Parameter):
         - Even if some weights don't need their grads to be reduced, it's still useful for them to be marked as tied. For example, current serialization format requires to mark them correctly.
     """
 
-    NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME = "__nanotron_metadata__"
-    NANOTRON_PARAMETER_METADATA_TIED_KEY = "tied"
-    NANOTRON_PARAMETER_METADATA_SHARDED_KEY = "sharded"
+    pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME = "__pollcok_metadata__"
+    pollcok_PARAMETER_METADATA_TIED_KEY = "tied"
+    pollcok_PARAMETER_METADATA_SHARDED_KEY = "sharded"
 
     def __new__(cls, tensor: torch.Tensor, requires_grad: bool = True):
         param = nn.Parameter.__new__(cls, data=tensor.data.detach(), requires_grad=requires_grad)
 
-        if isinstance(tensor, NanotronParameter):
+        if isinstance(tensor, pollcokParameter):
             # Check that we don't inherit a weird class
             # We copy in order not to make in-place operation
-            assert type(tensor) == NanotronParameter
+            assert type(tensor) == pollcokParameter
             setattr(
                 param,
-                cls.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME,
-                getattr(tensor, cls.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME).copy(),
+                cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME,
+                getattr(tensor, cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME).copy(),
             )
         else:
-            setattr(param, cls.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME, {})
+            setattr(param, cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME, {})
 
         return param
 
     def _set_metadata(self, key: str, value: Any):
-        metadata = getattr(self, self.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME)
+        metadata = getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)
 
         if key in metadata:
             raise ValueError(
@@ -143,22 +143,22 @@ class NanotronParameter(nn.Parameter):
         name: str,
         global_ranks: Tuple[int, ...],
         reduce_op: Optional[dist.ReduceOp],
-        root_module: "NanotronModel",
+        root_module: "pollcokModel",
     ):
         self._set_metadata(
-            self.NANOTRON_PARAMETER_METADATA_TIED_KEY,
+            self.pollcok_PARAMETER_METADATA_TIED_KEY,
             TiedInfo(name=name, global_ranks=global_ranks, reduce_op=reduce_op, root_module=root_module),
         )
 
     def get_tied_info(self) -> TiedInfo:
-        return getattr(self, self.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME)[
-            self.NANOTRON_PARAMETER_METADATA_TIED_KEY
+        return getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)[
+            self.pollcok_PARAMETER_METADATA_TIED_KEY
         ]
 
     @property
     def is_tied(self) -> bool:
-        return self.NANOTRON_PARAMETER_METADATA_TIED_KEY in getattr(
-            self, self.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME
+        return self.pollcok_PARAMETER_METADATA_TIED_KEY in getattr(
+            self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME
         )
 
     def mark_as_sharded(
@@ -168,7 +168,7 @@ class NanotronParameter(nn.Parameter):
         unsharded_shape: Tuple[int, ...],
     ):
         self._set_metadata(
-            self.NANOTRON_PARAMETER_METADATA_SHARDED_KEY,
+            self.pollcok_PARAMETER_METADATA_SHARDED_KEY,
             ShardedInfo(
                 global_ranks=global_ranks,
                 local_global_slices_pairs=local_global_slices_pairs,
@@ -177,25 +177,25 @@ class NanotronParameter(nn.Parameter):
         )
 
     def get_sharded_info(self) -> ShardedInfo:
-        return getattr(self, self.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME)[
-            self.NANOTRON_PARAMETER_METADATA_SHARDED_KEY
+        return getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)[
+            self.pollcok_PARAMETER_METADATA_SHARDED_KEY
         ]
 
     @property
     def is_sharded(self) -> bool:
-        return self.NANOTRON_PARAMETER_METADATA_SHARDED_KEY in getattr(
-            self, self.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME
+        return self.pollcok_PARAMETER_METADATA_SHARDED_KEY in getattr(
+            self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME
         )
 
 
 def sanity_check(root_module: nn.Module):
-    """Makes sure that the module is in Nanotronformat
+    """Makes sure that the module is in pollcokformat
 
     Format:
-     - all parameters are `NanotronParameter`, this allows us to add metadata to a parameter.
+     - all parameters are `pollcokParameter`, this allows us to add metadata to a parameter.
     """
     for name, param in root_module.named_parameters():
-        if not isinstance(param, NanotronParameter):
+        if not isinstance(param, pollcokParameter):
             raise ValueError(
-                f"Nanotronrequires model to be in Nanotronformat, ie all parameters are required to be a NanotronParameter. {name} isn't."
+                f"pollcokrequires model to be in pollcokformat, ie all parameters are required to be a pollcokParameter. {name} isn't."
             )

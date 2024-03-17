@@ -113,4 +113,4 @@ class Starcoder2Config:
         return self.intermediate_size
 
 
-NanotronConfigs = Union[LlamaConfig, Starcoder2Config, Any]
+pollcokConfigs = Union[LlamaConfig, Starcoder2Config, Any]

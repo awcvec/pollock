@@ -1,8 +1,8 @@
-from nanotron.optim.base import BaseOptimizer
-from nanotron.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
-from nanotron.optim.named_optimizer import NamedOptimizer
-from nanotron.optim.optimizer_from_gradient_accumulator import OptimizerFromGradientAccumulator
-from nanotron.optim.zero import ZeroDistributedOptimizer
+from pollcok.optim.base import BaseOptimizer
+from pollcok.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
+from pollcok.optim.named_optimizer import NamedOptimizer
+from pollcok.optim.optimizer_from_gradient_accumulator import OptimizerFromGradientAccumulator
+from pollcok.optim.zero import ZeroDistributedOptimizer
 
 __all__ = [
     "BaseOptimizer",

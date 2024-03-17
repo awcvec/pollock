@@ -1,13 +1,13 @@
 import torch
 from helpers.exception import assert_fail_with
-from nanotron.models.base import DTypeInvariantTensor, init_on_device_and_dtype
-from nanotron.parallel.parameters import NanotronParameter
+from pollcok.models.base import DTypeInvariantTensor, init_on_device_and_dtype
+from pollcok.parallel.parameters import pollcokParameter
 from torch import nn
 
 
-def test_nanotron_parameter_does_not_override_some_parameter_variable():
+def test_pollcok_parameter_does_not_override_some_parameter_variable():
     param = nn.Parameter(torch.empty(3))
-    assert not hasattr(param, NanotronParameter.NANOTRON_PARAMETER_METADATA_ATTRIBUTE_NAME)
+    assert not hasattr(param, pollcokParameter.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)
 
 
 def test_uncastable_tensor():

@@ -3,7 +3,7 @@ from typing import Callable, Dict, Optional, Set
 
 import torch
 
-from nanotron.optim.base import BaseOptimizer, Optimizer
+from pollcok.optim.base import BaseOptimizer, Optimizer
 
 
 class InheritFromOtherOptimizer(BaseOptimizer):

@@ -1,10 +1,10 @@
 ---
-library_name: nanotron
+library_name: pollcok
 ---
 
 # LlaMoE
 
-Modeling code for LlaMoE to use with [Nanotron](https://github.com/huggingface/nanotron/)
+Modeling code for LlaMoE to use with [pollcok](https://github.com/huggingface/pollcok/)
 
 ## 🚀 Quickstart
 

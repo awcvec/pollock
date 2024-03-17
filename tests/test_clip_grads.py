@@ -5,28 +5,28 @@ import pytest
 import torch
 from helpers.dummy import DummyModel, dummy_infinite_data_loader
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from nanotron import distributed as dist
-from nanotron.models import init_on_device_and_dtype
-from nanotron.optim.clip_grads import clip_grad_norm
-from nanotron.optim.gradient_accumulator import (
+from pollcok import distributed as dist
+from pollcok.models import init_on_device_and_dtype
+from pollcok.optim.clip_grads import clip_grad_norm
+from pollcok.optim.gradient_accumulator import (
     FP32GradientAccumulator,
 )
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter, sanity_check
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter, sanity_check
+from pollcok.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
 )
-from nanotron.parallel.pipeline_parallel.p2p import P2P
-from nanotron.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from nanotron.parallel.tensor_parallel.nn import (
+from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollcok.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
 )
-from nanotron.parallel.tied_parameters import (
+from pollcok.parallel.tied_parameters import (
     sync_tied_weights_gradients,
     tie_parameters,
 )
-from nanotron.parallel.utils import initial_sync
-from nanotron.sanity_checks import assert_tensor_synced_across_pg
+from pollcok.parallel.utils import initial_sync
+from pollcok.sanity_checks import assert_tensor_synced_across_pg
 from torch import nn
 
 
@@ -67,8 +67,8 @@ def _test_clip_grads_with_pp(parallel_context: ParallelContext, norm_type: float
 
     for module in model.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", NanotronParameter(module.weight))
-            setattr(module, "bias", NanotronParameter(module.bias))
+            setattr(module, "weight", pollcokParameter(module.weight))
+            setattr(module, "bias", pollcokParameter(module.bias))
 
     # synchronize weights
     if has_reference_model:
@@ -379,10 +379,10 @@ def _test_clip_grads_tied_weights(parallel_context: ParallelContext, norm_type: 
         weight = model.dense1.weight
         bias = model.dense1.bias
 
-    # Make sure that weight/bias are NanotronParameter and that they are tied
-    assert isinstance(weight, NanotronParameter)
+    # Make sure that weight/bias are pollcokParameter and that they are tied
+    assert isinstance(weight, pollcokParameter)
     assert weight.is_tied
-    assert isinstance(bias, NanotronParameter)
+    assert isinstance(bias, pollcokParameter)
     assert bias.is_tied
 
     # Sync tied weights: basic assumption
@@ -475,8 +475,8 @@ def _test_clip_grads_fp32_accumulator(
 
     for module in model.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", NanotronParameter(module.weight))
-            setattr(module, "bias", NanotronParameter(module.bias))
+            setattr(module, "weight", pollcokParameter(module.weight))
+            setattr(module, "bias", pollcokParameter(module.bias))
 
     # model goes to half precision
     model = model.to(half_precision)

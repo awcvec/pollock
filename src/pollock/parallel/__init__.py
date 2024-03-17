@@ -1,2 +1,2 @@
 # flake8: noqa
-from nanotron.parallel.context import ParallelContext
+from pollcok.parallel.context import ParallelContext

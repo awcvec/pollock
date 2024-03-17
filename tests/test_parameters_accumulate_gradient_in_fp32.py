@@ -1,35 +1,35 @@
 import copy
 
-import nanotron.distributed as dist
+import pollcok.distributed as dist
 import pytest
 import torch
 from helpers.dummy import DummyModel, dummy_infinite_data_loader
 from helpers.exception import assert_fail_except_rank_with, timeout_after
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from nanotron.models import init_on_device_and_dtype
-from nanotron.optim import ZeroDistributedOptimizer
-from nanotron.optim.gradient_accumulator import FP32GradBucketManager, FP32GradientAccumulator, get_fp32_accum_hook
-from nanotron.optim.named_optimizer import NamedOptimizer
-from nanotron.optim.optimizer_from_gradient_accumulator import (
+from pollcok.models import init_on_device_and_dtype
+from pollcok.optim import ZeroDistributedOptimizer
+from pollcok.optim.gradient_accumulator import FP32GradBucketManager, FP32GradientAccumulator, get_fp32_accum_hook
+from pollcok.optim.named_optimizer import NamedOptimizer
+from pollcok.optim.optimizer_from_gradient_accumulator import (
     OptimizerFromGradientAccumulator,
 )
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter, sanity_check
-from nanotron.parallel.pipeline_parallel.engine import (
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter, sanity_check
+from pollcok.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     OneForwardOneBackwardPipelineEngine,
     PipelineEngine,
 )
-from nanotron.parallel.pipeline_parallel.p2p import P2P
-from nanotron.parallel.pipeline_parallel.utils import get_pp_rank_of
-from nanotron.parallel.tied_parameters import (
+from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollcok.parallel.pipeline_parallel.utils import get_pp_rank_of
+from pollcok.parallel.tied_parameters import (
     get_tied_id_to_param,
     sync_tied_weights_gradients,
     tie_parameters,
 )
-from nanotron.parallel.utils import initial_sync
-from nanotron.sanity_checks import assert_tensor_synced_across_pg
-from nanotron.utils import ContextManagers
+from pollcok.parallel.utils import initial_sync
+from pollcok.sanity_checks import assert_tensor_synced_across_pg
+from pollcok.utils import ContextManagers
 from torch import nn
 
 
@@ -37,8 +37,8 @@ from torch import nn
 def test_gradient_promoting_in_fp32(half_precision: torch.dtype):
     model = nn.Linear(3, 2, bias=False, dtype=half_precision, device="cuda")
 
-    # Create Nanotron Parameter
-    model.weight = NanotronParameter(model.weight)
+    # Create pollcok Parameter
+    model.weight = pollcokParameter(model.weight)
 
     # Add gradient accumulator
     accumulator = FP32GradientAccumulator(model.named_parameters())
@@ -64,8 +64,8 @@ def test_gradient_accumulated_in_fp32(half_precision: torch.dtype):
     with torch.inference_mode():
         ref_model.weight.copy_(model.weight)
 
-    # Create Nanotron Parameter
-    model.weight = NanotronParameter(model.weight)
+    # Create pollcok Parameter
+    model.weight = pollcokParameter(model.weight)
 
     # Add gradient accumulator
     accumulator = FP32GradientAccumulator(model.named_parameters())
@@ -95,8 +95,8 @@ def test_optimizer_can_step_gradient_in_fp32(half_precision: torch.dtype):
     model = nn.Linear(3, 2, bias=False, dtype=half_precision, device="cuda")
     original_weight = model.weight.detach().clone()
 
-    # Create Nanotron Parameter
-    model.weight = NanotronParameter(model.weight)
+    # Create pollcok Parameter
+    model.weight = pollcokParameter(model.weight)
 
     # Add optimizer
     optimizer = OptimizerFromGradientAccumulator(
@@ -167,13 +167,13 @@ def _test_ddp_with_grad_accum_in_fp32(
     )
     model_hook = copy.deepcopy(model)
 
-    # Create Nanotron Parameters
+    # Create pollcok Parameters
     for module in model.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", NanotronParameter(module.weight))
+            setattr(module, "weight", pollcokParameter(module.weight))
     for module in model_hook.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", NanotronParameter(module.weight))
+            setattr(module, "weight", pollcokParameter(module.weight))
 
     # Needed in order to obtain smaller gradient buckets when using `DistributedDataParallel`
     model_ddp = torch.nn.parallel.DistributedDataParallel(
@@ -361,7 +361,7 @@ def _test_tied_weights_sync_with_grad_accum_in_fp32(
 
         for name, module in mdl.named_modules():
             if isinstance(module, nn.Linear):
-                module.bias = NanotronParameter(module.bias)
+                module.bias = pollcokParameter(module.bias)
 
         # Sync DP and tied weights: basic assumption
         initial_sync(model=mdl, parallel_context=parallel_context)
@@ -522,7 +522,7 @@ def _test_tied_weights_sync_with_grad_accum_in_fp32(
         get_tied_id_to_param(parameters=model_ddp.parameters(), root_module=model_ddp.module).items(),
         key=lambda x: x[0],
     ):
-        if not (isinstance(param, NanotronParameter) and param.is_tied):
+        if not (isinstance(param, pollcokParameter) and param.is_tied):
             continue
 
         group = parallel_context.world_ranks_to_pg[group_ranks]

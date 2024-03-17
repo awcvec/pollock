@@ -2,17 +2,17 @@ from typing import Iterable, Optional, Tuple
 
 import torch
 
-import nanotron.distributed as dist
-from nanotron import logging
-from nanotron.optim.gradient_accumulator import GradientAccumulator
-from nanotron.parallel.parameters import NanotronParameter
+import pollcok.distributed as dist
+from pollcok import logging
+from pollcok.optim.gradient_accumulator import GradientAccumulator
+from pollcok.parallel.parameters import pollcokParameter
 
 logger = logging.get_logger(__name__)
 
 
 def clip_grad_norm(
     mp_pg: dist.ProcessGroup,
-    named_parameters: Iterable[Tuple[str, NanotronParameter]],
+    named_parameters: Iterable[Tuple[str, pollcokParameter]],
     max_norm: float,
     grad_accumulator: Optional[GradientAccumulator],
     norm_type: float = 2.0,

@@ -10,13 +10,13 @@ import torch.nn.functional as F
 from config_llamoe import LlaMoEConfig
 from megablocks.layers import weight_parallel as wp
 from megablocks.layers.activation_fn import act_fn
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.config import ParallelismArgs
-from nanotron.parallel.context import ParallelContext
-from nanotron.parallel.sharded_parameters import SplitConfig, mark_all_parameters_in_module_as_sharded
-from nanotron.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from nanotron.parallel.tensor_parallel.nn import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.config import ParallelismArgs
+from pollcok.parallel.context import ParallelContext
+from pollcok.parallel.sharded_parameters import SplitConfig, mark_all_parameters_in_module_as_sharded
+from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollcok.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelRowLinear,
 )

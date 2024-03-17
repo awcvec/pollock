@@ -19,7 +19,7 @@ import torch
 from packaging import version
 from torch import Tensor, nn
 
-from nanotron import logging
+from pollcok import logging
 
 logger = logging.get_logger(__name__)
 

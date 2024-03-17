@@ -5,26 +5,26 @@ import torch
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron import optim as optim
-from nanotron.config import Config
-from nanotron.distributed import get_global_rank
-from nanotron.logging import log_rank
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.sanity_checks import (
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok import optim as optim
+from pollcok.config import Config
+from pollcok.distributed import get_global_rank
+from pollcok.logging import log_rank
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.sanity_checks import (
     assert_tensor_synced_across_pg,
     check_optim_state_in_sync,
 )
-from nanotron.serialize.metadata import CheckpointMetadata, load_meta, save_meta
-from nanotron.serialize.optimizer import (
+from pollcok.serialize.metadata import CheckpointMetadata, load_meta, save_meta
+from pollcok.serialize.optimizer import (
     load_lr_scheduler,
     load_optimizer,
     save_lr_scheduler,
     save_optimizer,
 )
-from nanotron.serialize.weights import load_weights, save_weights
+from pollcok.serialize.weights import load_weights, save_weights
 
 """
 We're going to use safetensors. The reason is that loading segments is going to be much easier
@@ -131,7 +131,7 @@ def save(
                 param
                 for parameters_group in optimizer.param_groups
                 for param in parameters_group["params"]
-                if param.requires_grad and isinstance(param, NanotronParameter) and param.is_tied
+                if param.requires_grad and isinstance(param, pollcokParameter) and param.is_tied
             ),
             key=lambda param: param.get_tied_info().name,
         )
@@ -162,7 +162,7 @@ def save(
         current_state_dict = optimizer.state_dict()
         for index, optim_state in sorted(current_state_dict["state"].items(), key=lambda x: x[0]):
             param = index_to_param[index]
-            if not isinstance(param, NanotronParameter):
+            if not isinstance(param, pollcokParameter):
                 continue
             if not param.is_tied:
                 # If it's not shared, we don't need to check it's synced

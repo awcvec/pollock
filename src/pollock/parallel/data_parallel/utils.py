@@ -2,8 +2,8 @@ from contextlib import contextmanager
 from typing import Optional
 
 import torch
-from nanotron import distributed as dist
-from nanotron.optim.gradient_accumulator import GradientAccumulator
+from pollcok import distributed as dist
+from pollcok.optim.gradient_accumulator import GradientAccumulator
 from torch import nn
 
 

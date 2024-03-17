@@ -6,18 +6,18 @@ from helpers.distributed_tensor import assert_tensor_equal_over_group
 from helpers.dummy import dummy_infinite_data_loader, init_dummy_model
 from helpers.exception import assert_fail_with
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from nanotron import distributed as dist
-from nanotron.optim import NamedOptimizer, ZeroDistributedOptimizer
-from nanotron.optim.zero import SlicedFlatTensor
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.data_parallel.utils import sync_gradients_across_dp
-from nanotron.parallel.parameters import NanotronParameter
-from nanotron.parallel.pipeline_parallel.engine import AllForwardAllBackwardPipelineEngine
-from nanotron.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from nanotron.parallel.tensor_parallel import nn
-from nanotron.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from nanotron.parallel.tied_parameters import sync_tied_weights_gradients
-from nanotron.random import RandomStates, branch_random_state, get_current_random_state, get_synced_random_state
+from pollcok import distributed as dist
+from pollcok.optim import NamedOptimizer, ZeroDistributedOptimizer
+from pollcok.optim.zero import SlicedFlatTensor
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.data_parallel.utils import sync_gradients_across_dp
+from pollcok.parallel.parameters import pollcokParameter
+from pollcok.parallel.pipeline_parallel.engine import AllForwardAllBackwardPipelineEngine
+from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollcok.parallel.tensor_parallel import nn
+from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollcok.parallel.tied_parameters import sync_tied_weights_gradients
+from pollcok.random import RandomStates, branch_random_state, get_current_random_state, get_synced_random_state
 from torch import nn as torch_nn
 from torch.nn.parallel import DistributedDataParallel
 
@@ -256,7 +256,7 @@ def _test_zero_optimizer_with_tp(
     )
     for module in reference_model.modules():
         for name, param in module.named_parameters(recurse=False):
-            setattr(module, name, NanotronParameter(param))
+            setattr(module, name, pollcokParameter(param))
 
     reference_optimizer = torch.optim.AdamW(reference_model.parameters())
     # TODO @thomasw21: This is a hack to obtain `AdamW` index in it's state.
@@ -269,7 +269,7 @@ def _test_zero_optimizer_with_tp(
 
         for (name, param), (ref_name, ref_param) in zip(model.named_parameters(), reference_model.named_parameters()):
             assert name == ref_name
-            assert isinstance(param, NanotronParameter)
+            assert isinstance(param, pollcokParameter)
 
             if param.is_sharded:
                 sharded_info = param.get_sharded_info()
@@ -476,7 +476,7 @@ def _test_zero_optimizer_with_tp(
             offsets = optimizer.param_name_to_dp_rank_offsets[name][dist.get_rank(parallel_context.dp_pg)]
 
             assert set(optim_state) == set(ref_optim_state)
-            assert isinstance(param, NanotronParameter)
+            assert isinstance(param, pollcokParameter)
             for key in ["exp_avg", "exp_avg_sq"]:
                 value = optim_state[key]
                 ref_value = ref_optim_state[key]

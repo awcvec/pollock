@@ -10,14 +10,14 @@ from functorch.dim import tree_map
 from torch import nn
 from tqdm import tqdm
 
-from nanotron import distributed as dist
-from nanotron import logging
-from nanotron.distributed import ProcessGroup
-from nanotron.logging import human_format, log_rank, warn_once
-from nanotron.optim.base import BaseOptimizer
-from nanotron.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
-from nanotron.parallel import ParallelContext
-from nanotron.parallel.parameters import NanotronParameter
+from pollcok import distributed as dist
+from pollcok import logging
+from pollcok.distributed import ProcessGroup
+from pollcok.logging import human_format, log_rank, warn_once
+from pollcok.optim.base import BaseOptimizer
+from pollcok.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
+from pollcok.parallel import ParallelContext
+from pollcok.parallel.parameters import pollcokParameter
 
 logger = logging.get_logger(__name__)
 
@@ -27,7 +27,7 @@ class ZeroDistributedOptimizer(InheritFromOtherOptimizer):
 
     def __init__(
         self,
-        named_params_or_groups: Iterable[Union[Tuple[str, NanotronParameter], Dict[str, Any]]],
+        named_params_or_groups: Iterable[Union[Tuple[str, pollcokParameter], Dict[str, Any]]],
         optimizer_builder: Callable[[Iterable[Dict[str, Any]]], BaseOptimizer],
         dp_pg: ProcessGroup,
     ):
@@ -52,7 +52,7 @@ class ZeroDistributedOptimizer(InheritFromOtherOptimizer):
 
             self.zero_named_param_groups = named_params_or_groups
         else:
-            # case where named_params_or_groups is Iterable[Tuple[str, NanotronParameter]]
+            # case where named_params_or_groups is Iterable[Tuple[str, pollcokParameter]]
             # keep only named_params_or_groups that require grads
             named_params_or_groups = [(name, param) for name, param in named_params_or_groups if param.requires_grad]
             self.zero_named_param_groups = [{"named_params": named_params_or_groups}]
@@ -337,7 +337,7 @@ class SlicedFlatTensor(torch.Tensor):
     grad = property(_get_grad, _set_grad, _del_grad)
 
 
-def get_sliced_tensor(param: NanotronParameter, start_offset: int, end_offset: int):
+def get_sliced_tensor(param: pollcokParameter, start_offset: int, end_offset: int):
     # This allows us to create a leaf tensor, despite sharing the underlying storage
     result = SlicedFlatTensor(data=param, start_offset=start_offset, end_offset=end_offset)
     return result
