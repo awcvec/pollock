@@ -16,27 +16,27 @@ from torch.optim import AdamW
 from torch.optim.lr_scheduler import LambdaLR
 from torch.profiler import ProfilerActivity, profile, tensorboard_trace_handler
 
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.config import Config, LRSchedulerArgs, OptimizerArgs, ParallelismArgs
-from pollcok.distributed import ProcessGroup
-from pollcok.logging import LogItem, log_rank
-from pollcok.models.base import pollcokModel
-from pollcok.optim.base import BaseOptimizer, Optimizer
-from pollcok.optim.gradient_accumulator import (
+from pollock import distributed as dist
+from pollock import logging
+from pollock.config import Config, LRSchedulerArgs, OptimizerArgs, ParallelismArgs
+from pollock.distributed import ProcessGroup
+from pollock.logging import LogItem, log_rank
+from pollock.models.base import pollockModel
+from pollock.optim.base import BaseOptimizer, Optimizer
+from pollock.optim.gradient_accumulator import (
     FP32GradBucketManager,
     FP32GradientAccumulator,
     GradientAccumulator,
     get_fp32_accum_hook,
 )
-from pollcok.optim.named_optimizer import NamedOptimizer
-from pollcok.optim.optimizer_from_gradient_accumulator import (
+from pollock.optim.named_optimizer import NamedOptimizer
+from pollock.optim.optimizer_from_gradient_accumulator import (
     OptimizerFromGradientAccumulator,
 )
-from pollcok.optim.zero import ZeroDistributedOptimizer
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
-from pollcok.random import (
+from pollock.optim.zero import ZeroDistributedOptimizer
+from pollock.parallel import ParallelContext
+from pollock.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollock.random import (
     RandomStates,
     get_current_random_state,
     get_synced_random_state,
@@ -153,7 +153,7 @@ def init_optimizer_and_grad_accumulator(
     model: nn.Module, optimizer_args: OptimizerArgs, parallel_context: ParallelContext
 ) -> Tuple[BaseOptimizer, GradientAccumulator]:
     # Unwrap DDP
-    unwrapped_model: pollcokModel = model.module if isinstance(model, DistributedDataParallel) else model
+    unwrapped_model: pollockModel = model.module if isinstance(model, DistributedDataParallel) else model
 
     module_id_to_prefix = {id(module): f"{module_name}." for module_name, module in unwrapped_model.named_modules()}
     # Fix the root_model

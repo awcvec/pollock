@@ -3,7 +3,7 @@ from typing import Callable, Dict, Optional, Set
 
 import torch
 
-from pollcok.optim.base import BaseOptimizer, Optimizer
+from pollock.optim.base import BaseOptimizer, Optimizer
 
 
 class InheritFromOtherOptimizer(BaseOptimizer):

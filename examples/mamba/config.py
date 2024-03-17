@@ -3,8 +3,8 @@ from typing import Optional, Union
 
 import torch
 
-from pollcok.config import Config, ExistingCheckpointInit, pollcokConfigs
-from pollcok.config.utils_config import cast_str_to_torch_dtype
+from pollock.config import Config, ExistingCheckpointInit, pollockConfigs
+from pollock.config.utils_config import cast_str_to_torch_dtype
 
 
 @dataclass
@@ -19,7 +19,7 @@ class MambaInit:
 class ModelArgs:
     """Arguments related to model architecture"""
 
-    model_config: pollcokConfigs
+    model_config: pollockConfigs
     init_method: Union[MambaInit, ExistingCheckpointInit]
     dtype: Optional[torch.dtype] = None
     make_vocab_size_divisible_by: int = 1

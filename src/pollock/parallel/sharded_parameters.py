@@ -4,8 +4,8 @@ from typing import List, Optional, Tuple
 import numpy as np
 from torch import nn
 
-from pollcok import distributed as dist
-from pollcok.parallel.parameters import pollcokParameter, SlicesPair
+from pollock import distributed as dist
+from pollock.parallel.parameters import pollockParameter, SlicesPair
 
 
 @dataclasses.dataclass
@@ -22,9 +22,9 @@ def create_sharded_parameter(
     global_ranks: Tuple[int, ...],
     local_global_slices_pairs: Tuple[SlicesPair, ...],
     unsharded_shape: Tuple[int, ...],
-) -> pollcokParameter:
-    if not isinstance(parameter, pollcokParameter):
-        parameter = pollcokParameter(tensor=parameter)
+) -> pollockParameter:
+    if not isinstance(parameter, pollockParameter):
+        parameter = pollockParameter(tensor=parameter)
     parameter.mark_as_sharded(
         global_ranks=global_ranks,
         local_global_slices_pairs=local_global_slices_pairs,
@@ -37,7 +37,7 @@ def create_sharded_parameter_from_config(
     parameter: nn.Parameter,
     pg: dist.ProcessGroup,
     split_config: SplitConfig,
-) -> pollcokParameter:
+) -> pollockParameter:
     current_rank = dist.get_rank(pg)
     param_num_dims = len(parameter.shape)
     global_ranks = dist.get_global_ranks(pg)

@@ -4,11 +4,11 @@ import pytest
 import torch
 from helpers.exception import assert_fail_except_rank_with
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from pollcok import distributed as dist
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.data_parallel.utils import ddp_trigger_sync_in_bwd
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.sanity_checks import assert_tensor_synced_across_pg
+from pollock import distributed as dist
+from pollock.parallel import ParallelContext
+from pollock.parallel.data_parallel.utils import ddp_trigger_sync_in_bwd
+from pollock.parallel.parameters import pollockParameter
+from pollock.sanity_checks import assert_tensor_synced_across_pg
 from torch import nn
 from torch.distributed import GradBucket
 
@@ -37,8 +37,8 @@ def _test_ddp_with_afab(parallel_context: ParallelContext, accumulation_steps: i
 
     model_hook = nn.Linear(3, 2, bias=False, dtype=half_precision, device="cuda")
 
-    # Create pollcok Parameter
-    model_hook.weight = pollcokParameter(model_hook.weight)
+    # Create pollock Parameter
+    model_hook.weight = pollockParameter(model_hook.weight)
 
     model_ddp_hook = torch.nn.parallel.DistributedDataParallel(
         model_hook,

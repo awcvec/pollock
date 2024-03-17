@@ -5,9 +5,9 @@ import pytest
 import torch
 import transformer_engine as te  # noqa
 import transformer_engine_extensions as tex
-from pollcok.fp8 import DTypes, FP8Tensor
-from pollcok.fp8.meta import FP8Meta
-from pollcok.fp8.tensor import convert_tensor_from_fp8
+from pollock.fp8 import DTypes, FP8Tensor
+from pollock.fp8.meta import FP8Meta
+from pollock.fp8.tensor import convert_tensor_from_fp8
 
 
 @pytest.mark.parametrize("size", [4, 8, 16, 64])

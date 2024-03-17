@@ -4,17 +4,17 @@ import pytest
 import torch
 from helpers.dummy import DummyModel, dummy_infinite_data_loader
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from pollcok import distributed as dist
-from pollcok.models import init_on_device_and_dtype
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock
-from pollcok.parallel.pipeline_parallel.engine import (
+from pollock import distributed as dist
+from pollock.models import init_on_device_and_dtype
+from pollock.parallel import ParallelContext
+from pollock.parallel.pipeline_parallel.block import PipelineBlock
+from pollock.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     OneForwardOneBackwardPipelineEngine,
     PipelineEngine,
 )
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
 from torch import nn
 from torch.nn import functional as F
 

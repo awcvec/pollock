@@ -3,16 +3,16 @@ from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple, Union
 
 import torch
 
-from pollcok.optim.base import BaseOptimizer
-from pollcok.optim.gradient_accumulator import GradientAccumulator
-from pollcok.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
-from pollcok.parallel.parameters import pollcokParameter
+from pollock.optim.base import BaseOptimizer
+from pollock.optim.gradient_accumulator import GradientAccumulator
+from pollock.optim.inherit_from_other_optimizer import InheritFromOtherOptimizer
+from pollock.parallel.parameters import pollockParameter
 
 
 class OptimizerFromGradientAccumulator(InheritFromOtherOptimizer):
     def __init__(
         self,
-        gradient_accumulator_builder: Callable[[Iterable[Tuple[str, pollcokParameter]]], GradientAccumulator],
+        gradient_accumulator_builder: Callable[[Iterable[Tuple[str, pollockParameter]]], GradientAccumulator],
         named_params_or_groups: Iterable[Union[Tuple[str, torch.Tensor], Dict[str, Any]]],
         optimizer_builder: Callable[[Iterable[Dict[str, Any]]], BaseOptimizer],
     ):

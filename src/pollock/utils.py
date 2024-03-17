@@ -12,7 +12,7 @@ from packaging import version
 from torch import nn
 from torch.utils.checkpoint import checkpoint
 
-from pollcok import distributed as dist
+from pollock import distributed as dist
 
 
 class ContextManagers:

@@ -2,10 +2,10 @@ import torch
 from helpers.distributed_tensor import assert_tensor_equal_over_group
 from helpers.exception import assert_fail_with
 from helpers.utils import init_distributed, rerun_if_address_is_in_use
-from pollcok import distributed as dist
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.tied_parameters import (
+from pollock import distributed as dist
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.tied_parameters import (
     get_tied_id_to_param,
     sync_tied_weights_gradients,
     tie_parameters,
@@ -90,10 +90,10 @@ def _test_tie_weight_in_different_device(parallel_context: ParallelContext):
         weight = model.dense1.weight
         bias = model.dense1.bias
 
-    # Make sure that weight/bias are pollcokParameter and that they are tied
-    assert isinstance(weight, pollcokParameter)
+    # Make sure that weight/bias are pollockParameter and that they are tied
+    assert isinstance(weight, pollockParameter)
     assert weight.is_tied
-    assert isinstance(bias, pollcokParameter)
+    assert isinstance(bias, pollockParameter)
     assert bias.is_tied
 
     # Weights/bias are not synced yet
@@ -199,10 +199,10 @@ def _test_tie_weight_in_different_device_have_gradients_synchronized(parallel_co
         weight = model.dense1.weight
         bias = model.dense1.bias
 
-    # Make sure that weight/bias are pollcokParameter and that they are tied
-    assert isinstance(weight, pollcokParameter)
+    # Make sure that weight/bias are pollockParameter and that they are tied
+    assert isinstance(weight, pollockParameter)
     assert weight.is_tied
-    assert isinstance(bias, pollcokParameter)
+    assert isinstance(bias, pollockParameter)
     assert bias.is_tied
 
     # Weights/bias are not synced yet

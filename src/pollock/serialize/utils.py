@@ -5,9 +5,9 @@ from typing import List, Optional, Tuple
 
 import torch
 
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import SlicesPair
-from pollcok.serialize.metadata import TensorMetadata
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import SlicesPair
+from pollock.serialize.metadata import TensorMetadata
 
 
 class ObjectType(Enum):

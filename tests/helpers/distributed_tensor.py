@@ -1,6 +1,6 @@
 import torch
-from pollcok import distributed as dist
-from pollcok.distributed import ProcessGroup, get_global_rank
+from pollock import distributed as dist
+from pollock.distributed import ProcessGroup, get_global_rank
 
 
 def assert_tensor_equal_over_group(tensor: torch.Tensor, group: ProcessGroup, assert_: bool = True) -> bool:

@@ -25,26 +25,26 @@ from flash_attn.flash_attn_interface import (
 )
 from flash_attn.layers.rotary import RotaryEmbedding as FlashRotaryEmbedding
 from moe import dMoE
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.config import ParallelismArgs
-from pollcok.generation.generate_store import AttachableStore
-from pollcok.logging import log_rank
-from pollcok.models import pollcokModel
-from pollcok.nn.layer_norm import TritonRMSNorm
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.tensor_parallel.functional import sharded_cross_entropy
-from pollcok.parallel.tensor_parallel.nn import (
+from pollock import distributed as dist
+from pollock import logging
+from pollock.config import ParallelismArgs
+from pollock.generation.generate_store import AttachableStore
+from pollock.logging import log_rank
+from pollock.models import pollockModel
+from pollock.nn.layer_norm import TritonRMSNorm
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.tensor_parallel.functional import sharded_cross_entropy
+from pollock.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelEmbedding,
     TensorParallelLinearMode,
     TensorParallelRowLinear,
 )
-from pollcok.random import RandomStates
-from pollcok.utils import checkpoint_method
+from pollock.random import RandomStates
+from pollock.utils import checkpoint_method
 from torch import nn
 from torch.nn import init
 
@@ -788,7 +788,7 @@ class Loss(nn.Module):
         return {"loss": loss}
 
 
-class LlaMoEForTraining(pollcokModel):
+class LlaMoEForTraining(pollockModel):
     def __init__(
         self,
         config: LlaMoEConfig,
@@ -849,7 +849,7 @@ class LlaMoEForTraining(pollcokModel):
         num_layers = config.model.model_config.num_hidden_layers
 
         for param_name, param in model.named_parameters():
-            assert isinstance(param, pollcokParameter)
+            assert isinstance(param, pollockParameter)
 
             module_name, param_name = param_name.rsplit(".", 1)
 

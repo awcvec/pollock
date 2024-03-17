@@ -2,17 +2,17 @@ from typing import Iterable, Optional, Tuple
 
 import torch
 
-import pollcok.distributed as dist
-from pollcok import logging
-from pollcok.optim.gradient_accumulator import GradientAccumulator
-from pollcok.parallel.parameters import pollcokParameter
+import pollock.distributed as dist
+from pollock import logging
+from pollock.optim.gradient_accumulator import GradientAccumulator
+from pollock.parallel.parameters import pollockParameter
 
 logger = logging.get_logger(__name__)
 
 
 def clip_grad_norm(
     mp_pg: dist.ProcessGroup,
-    named_parameters: Iterable[Tuple[str, pollcokParameter]],
+    named_parameters: Iterable[Tuple[str, pollockParameter]],
     max_norm: float,
     grad_accumulator: Optional[GradientAccumulator],
     norm_type: float = 2.0,

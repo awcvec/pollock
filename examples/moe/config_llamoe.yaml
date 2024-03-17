@@ -1,8 +1,8 @@
 checkpoints:
   checkpoint_interval: 100000
-  checkpoints_path: /fsx/nouamane/projects/pollcok/examples/checkpoints
+  checkpoints_path: /fsx/nouamane/projects/pollock/examples/checkpoints
   checkpoints_path_is_shared_file_system: false
-  resume_checkpoint_path: /fsx/nouamane/projects/pollcok/examples/checkpoints
+  resume_checkpoint_path: /fsx/nouamane/projects/pollock/examples/checkpoints
   save_initial_state: true
 data:
   dataset:

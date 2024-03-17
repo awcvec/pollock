@@ -6,29 +6,29 @@ import numpy as np
 import torch
 from torch import nn
 
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.distributed import ProcessGroup
-from pollcok.logging import log_rank
-from pollcok.parallel.context import ParallelContext
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock
+from pollock import distributed as dist
+from pollock import logging
+from pollock.distributed import ProcessGroup
+from pollock.logging import log_rank
+from pollock.parallel.context import ParallelContext
+from pollock.parallel.pipeline_parallel.block import PipelineBlock
 
 if TYPE_CHECKING:
-    from pollcok.config import pollcokConfigs
-    from pollcok.parallel.parameters import pollcokParameter
+    from pollock.config import pollockConfigs
+    from pollock.parallel.parameters import pollockParameter
 
 logger = logging.get_logger(__name__)
 
 
-class pollcokModel(nn.Module, metaclass=ABCMeta):
-    """Abstract class for pollcok models
+class pollockModel(nn.Module, metaclass=ABCMeta):
+    """Abstract class for pollock models
     We make the following assumptions:
     - When building PP blocks, we assume that the modules order are in the same order as the forward pass."""
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.parallel_context: "ParallelContext"
-        self.config: "pollcokConfigs"
+        self.config: "pollockConfigs"
         self.module_id_to_prefix: dict[int, str]
 
         # Attributes defined when building the model
@@ -39,7 +39,7 @@ class pollcokModel(nn.Module, metaclass=ABCMeta):
         self.module_id_to_prefix = {id(module): f"{module_name}." for module_name, module in self.named_modules()}
         self.module_id_to_prefix[id(self)] = ""
 
-    def get_named_params_with_correct_tied(self) -> Iterator[Tuple[str, "pollcokParameter"]]:
+    def get_named_params_with_correct_tied(self) -> Iterator[Tuple[str, "pollockParameter"]]:
         """Return named parameters with correct tied params names.
         For example in the case of tied kv heads in MQA, we need to make sure tied params names are correct."""
 
@@ -86,7 +86,7 @@ class pollcokModel(nn.Module, metaclass=ABCMeta):
         pass
 
     def log_modules(self, level: int = logging.DEBUG, group: Optional[ProcessGroup] = None, rank: int = 0):
-        assert hasattr(self, "parallel_context"), "`pollcokModel` needs to have a `parallel_context` attribute"
+        assert hasattr(self, "parallel_context"), "`pollockModel` needs to have a `parallel_context` attribute"
 
         for name, module in self.named_modules():
             if not isinstance(module, PipelineBlock):
@@ -152,16 +152,16 @@ class DTypeInvariantTensor(torch.Tensor):
 
 
 def build_model(
-    model_builder: Callable[[], pollcokModel],
+    model_builder: Callable[[], pollockModel],
     parallel_context: ParallelContext,
     dtype: torch.dtype,
     target_pp_ranks: Optional[List[int]] = None,
     device: Optional[torch.device] = torch.device("cuda"),
-) -> pollcokModel:
+) -> pollockModel:
     """Build the model and set the pp ranks for each pipeline block."""
     # TODO: classes dont take same args
     log_rank("Building model..", logger=logger, level=logging.INFO, rank=0, group=parallel_context.world_pg)
-    model: pollcokModel = model_builder()
+    model: pollockModel = model_builder()
 
     # If no target pp ranks are specified, we assume that we want to use all pp ranks
     if target_pp_ranks is None:
@@ -175,7 +175,7 @@ def build_model(
     pipeline_blocks = [module for name, module in model.named_modules() if isinstance(module, PipelineBlock)]
     # "cuda" is already defaulted for each process to it's own cuda device
     with init_on_device_and_dtype(device=device, dtype=dtype):
-        # TODO: https://github.com/huggingface/pollcok/issues/65
+        # TODO: https://github.com/huggingface/pollock/issues/65
 
         # Balance compute across PP blocks
         block_compute_costs = model.get_block_compute_costs()
@@ -272,7 +272,7 @@ def init_on_device_and_dtype(
             setattr(torch, torch_function_name, old_torch_function)
 
 
-def check_model_has_grad(model: pollcokModel, parallel_context: "ParallelContext"):
+def check_model_has_grad(model: pollockModel, parallel_context: "ParallelContext"):
     """Check that there's at least a parameter in current PP rank that has a gradient."""
     for param in model.parameters():
         if param.requires_grad:

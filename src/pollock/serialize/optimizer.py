@@ -6,20 +6,20 @@ import torch
 from torch import nn
 from tqdm import tqdm
 
-from pollcok import distributed as dist
-from pollcok import optim
-from pollcok.optim.zero import (
+from pollock import distributed as dist
+from pollock import optim
+from pollock.optim.zero import (
     ZeroDistributedOptimizer,
     extract_parallel_ranks_from_shard_path,
     find_optim_index_from_param_name,
     get_sliced_tensor,
     merge_dp_shard_in_zero1_optimizer,
 )
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.sanity_checks import check_optim_state_in_sync
-from pollcok.serialize.metadata import TensorMetadata
-from pollcok.serialize.utils import ObjectType, merge_and_shard_tp_tensors
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.sanity_checks import check_optim_state_in_sync
+from pollock.serialize.metadata import TensorMetadata
+from pollock.serialize.utils import ObjectType, merge_and_shard_tp_tensors
 
 
 # TODO(xrsrke): take rank instead of parallel_context
@@ -203,8 +203,8 @@ def load_optimizer(
             except AttributeError:
                 param = None
 
-            if not isinstance(param, pollcokParameter):
-                raise NotImplementedError("Parameters are required to be pollcokParameter")
+            if not isinstance(param, pollockParameter):
+                raise NotImplementedError("Parameters are required to be pollockParameter")
 
             # NOTE: for tied parameters, the metadata is stored using the parameter name,
             # while the data is stored using the name of the main tied parameter,

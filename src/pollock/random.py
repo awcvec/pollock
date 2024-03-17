@@ -6,8 +6,8 @@ from typing import MutableMapping, Optional, Tuple
 import numpy as np
 import torch
 
-from pollcok import distributed as dist
-from pollcok.distributed import ProcessGroup
+from pollock import distributed as dist
+from pollock.distributed import ProcessGroup
 
 
 @dataclass
@@ -44,7 +44,7 @@ class RandomStates(MutableMapping[str, RandomState]):
         if not isinstance(key, str):
             raise ValueError(f"Expected key to be of type str. Got {type(key)}")
         if not isinstance(value, RandomState):
-            raise ValueError(f"Expected value to be of type `pollcok.dataclass.RandomState`. Got {type(value)}")
+            raise ValueError(f"Expected value to be of type `pollock.dataclass.RandomState`. Got {type(value)}")
 
     def __getitem__(self, item):
         return self._dict[item]

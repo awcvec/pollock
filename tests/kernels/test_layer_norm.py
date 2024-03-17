@@ -2,7 +2,7 @@ import pytest
 import torch
 from torch.nn import LayerNorm
 
-from pollcok.nn.layer_norm import TritonLayerNorm
+from pollock.nn.layer_norm import TritonLayerNorm
 
 
 @pytest.mark.fa2

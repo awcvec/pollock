@@ -2,9 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Union
 
-from pollcok.config.parallelism_config import ParallelismArgs
-from pollcok.generation.sampler import SamplerType
-from pollcok.logging import get_logger
+from pollock.config.parallelism_config import ParallelismArgs
+from pollock.generation.sampler import SamplerType
+from pollock.logging import get_logger
 
 logger = get_logger(__name__)
 

@@ -2,9 +2,9 @@ from pathlib import Path
 
 import torch
 
-from pollcok import distributed as dist
-from pollcok.parallel import ParallelContext
-from pollcok.random import RandomStates
+from pollock import distributed as dist
+from pollock.parallel import ParallelContext
+from pollock.random import RandomStates
 
 
 def save_random_states(

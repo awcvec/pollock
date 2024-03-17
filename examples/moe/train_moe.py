@@ -11,8 +11,8 @@ import sys
 
 from config_llamoe import LlaMoEConfig
 from llamoe import LlaMoEForTraining
-from pollcok import logging
-from pollcok.trainer import DistributedTrainer
+from pollock import logging
+from pollock.trainer import DistributedTrainer
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 

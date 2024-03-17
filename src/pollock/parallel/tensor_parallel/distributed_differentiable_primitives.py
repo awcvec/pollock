@@ -17,8 +17,8 @@ from typing import Optional
 import torch
 from torch import distributed as torch_dist
 
-from pollcok import distributed as dist
-from pollcok.distributed import ProcessGroup
+from pollock import distributed as dist
+from pollock.distributed import ProcessGroup
 
 
 class DifferentiableIdentity(torch.autograd.Function):

@@ -2,8 +2,8 @@ from contextlib import contextmanager
 from typing import Optional
 
 import torch
-from pollcok import distributed as dist
-from pollcok.optim.gradient_accumulator import GradientAccumulator
+from pollock import distributed as dist
+from pollock.optim.gradient_accumulator import GradientAccumulator
 from torch import nn
 
 

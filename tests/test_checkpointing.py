@@ -1,8 +1,8 @@
 from typing import Union
 
 import torch
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from pollcok.utils import checkpoint_method
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.utils import checkpoint_method
 from torch import nn
 
 

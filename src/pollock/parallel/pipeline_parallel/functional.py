@@ -1,7 +1,7 @@
 import torch
-from pollcok import logging
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.pipeline_parallel.state import PipelineBatchState
+from pollock import logging
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.pipeline_parallel.state import PipelineBatchState
 
 logger = logging.get_logger(__name__)
 

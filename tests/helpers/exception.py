@@ -2,7 +2,7 @@ import contextlib
 import signal
 from typing import Optional
 
-from pollcok import distributed as dist
+from pollock import distributed as dist
 
 
 @contextlib.contextmanager

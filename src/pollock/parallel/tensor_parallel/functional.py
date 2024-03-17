@@ -18,15 +18,15 @@ from typing import Optional
 import torch
 from torch.nn import functional as F
 
-import pollcok.distributed as dist
-from pollcok.parallel.tensor_parallel.distributed_differentiable_primitives import (
+import pollock.distributed as dist
+from pollock.parallel.tensor_parallel.distributed_differentiable_primitives import (
     differentiable_all_gather,
     differentiable_all_reduce_sum,
     differentiable_identity,
     differentiable_reduce_scatter_sum,
 )
-from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from pollcok.parallel.utils import assert_cuda_max_connections_set_to_1
+from pollock.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollock.parallel.utils import assert_cuda_max_connections_set_to_1
 
 
 class _ShardedCrossEntropy(torch.autograd.Function):

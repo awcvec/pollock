@@ -4,13 +4,13 @@ from pathlib import Path
 
 import torch
 
-from pollcok.generation.sampler import SamplerType
-from pollcok.parallel.pipeline_parallel.engine import (
+from pollock.generation.sampler import SamplerType
+from pollock.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     OneForwardOneBackwardPipelineEngine,
     PipelineEngine,
 )
-from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollock.parallel.tensor_parallel.nn import TensorParallelLinearMode
 
 
 class RecomputeGranularity(Enum):

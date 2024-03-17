@@ -7,7 +7,7 @@ from helpers.utils import (
     init_distributed,
     rerun_if_address_is_in_use,
 )
-from pollcok.parallel import ParallelContext
+from pollock.parallel import ParallelContext
 from torch.distributed import ProcessGroup
 
 

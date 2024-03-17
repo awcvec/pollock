@@ -3,9 +3,9 @@ import os
 
 from torch import nn
 
-from pollcok import distributed as dist
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.tied_parameters import get_tied_id_to_param
+from pollock import distributed as dist
+from pollock.parallel import ParallelContext
+from pollock.parallel.tied_parameters import get_tied_id_to_param
 
 
 def assert_cuda_max_connections_set_to_1(func):

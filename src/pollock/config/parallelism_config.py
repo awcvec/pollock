@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from pollcok.config.utils_config import (
+from pollock.config.utils_config import (
     cast_str_to_pipeline_engine,
 )
-from pollcok.parallel.pipeline_parallel.engine import (
+from pollock.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
     PipelineEngine,
 )
-from pollcok.parallel.tensor_parallel.nn import TensorParallelLinearMode
+from pollock.parallel.tensor_parallel.nn import TensorParallelLinearMode
 
 
 @dataclass

@@ -1,9 +1,9 @@
-""" Example python script to generate a YAML config file which can be used to run a training with pollcok. Refer to "examples" section in the `/README.md` for more information."""
+""" Example python script to generate a YAML config file which can be used to run a training with pollock. Refer to "examples" section in the `/README.md` for more information."""
 import os
 from dataclasses import dataclass
 from typing import Optional
 
-from pollcok.config import (
+from pollock.config import (
     CheckpointsArgs,
     Config,
     DataArgs,
@@ -17,8 +17,8 @@ from pollcok.config import (
     TokenizerArgs,
     TokensArgs,
 )
-from pollcok.config.config import PretrainDatasetsArgs
-from pollcok.logging import human_format
+from pollock.config.config import PretrainDatasetsArgs
+from pollock.logging import human_format
 
 
 @dataclass

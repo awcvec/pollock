@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock
-from pollcok.parallel.pipeline_parallel.state import PipelineBatchState
+from pollock.parallel.pipeline_parallel.block import PipelineBlock
+from pollock.parallel.pipeline_parallel.state import PipelineBatchState
 from torch import nn as torch_nn
 
 

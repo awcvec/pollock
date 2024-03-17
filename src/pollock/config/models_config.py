@@ -113,4 +113,4 @@ class Starcoder2Config:
         return self.intermediate_size
 
 
-pollcokConfigs = Union[LlamaConfig, Starcoder2Config, Any]
+pollockConfigs = Union[LlamaConfig, Starcoder2Config, Any]

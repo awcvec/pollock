@@ -24,25 +24,25 @@ import torch.nn as nn
 import torch.nn.functional as F
 from config import MambaModelConfig
 from einops import rearrange, repeat
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.config import ParallelismArgs
-from pollcok.config.utils_config import cast_str_to_torch_dtype
-from pollcok.generation.generate_store import AttachableStore
-from pollcok.logging import log_rank
-from pollcok.models import pollcokModel
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.tensor_parallel.functional import sharded_cross_entropy
-from pollcok.parallel.tensor_parallel.nn import (
+from pollock import distributed as dist
+from pollock import logging
+from pollock.config import ParallelismArgs
+from pollock.config.utils_config import cast_str_to_torch_dtype
+from pollock.generation.generate_store import AttachableStore
+from pollock.logging import log_rank
+from pollock.models import pollockModel
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.pipeline_parallel.block import PipelineBlock, TensorPointer
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.tensor_parallel.functional import sharded_cross_entropy
+from pollock.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelEmbedding,
     TensorParallelLinearMode,
     TensorParallelRowLinear,
 )
-from pollcok.random import RandomStates
+from pollock.random import RandomStates
 from selective_scan_interface import mamba_inner_fn, selective_scan_fn
 from torch.nn import init
 
@@ -732,7 +732,7 @@ class Loss(nn.Module):
         return {"loss": loss}
 
 
-class MambaForTraining(pollcokModel):
+class MambaForTraining(pollockModel):
     def __init__(
         self,
         config: MambaModelConfig,
@@ -804,7 +804,7 @@ class MambaForTraining(pollcokModel):
             dt_scale = config.model.model_config.ssm_cfg["dt_scale"]
 
         for param_name, param in model.named_parameters():
-            assert isinstance(param, pollcokParameter)
+            assert isinstance(param, pollockParameter)
 
             module_name, param_name = param_name.rsplit(".", 1)
 

@@ -1,6 +1,6 @@
 import torch
-from pollcok.logging import LoggerWriter
-from pollcok.nn.layer_norm import TritonLayerNorm
+from pollock.logging import LoggerWriter
+from pollock.nn.layer_norm import TritonLayerNorm
 from torch.nn import LayerNorm
 
 

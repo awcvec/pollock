@@ -1,10 +1,10 @@
 ---
-library_name: pollcok
+library_name: pollock
 ---
 
 # LlaMoE
 
-Modeling code for LlaMoE to use with [pollcok](https://github.com/huggingface/pollcok/)
+Modeling code for LlaMoE to use with [pollock](https://github.com/huggingface/pollock/)
 
 ## 🚀 Quickstart
 

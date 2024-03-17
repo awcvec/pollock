@@ -1,10 +1,10 @@
-from pollcok.models import pollcokModel
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock
+from pollock.models import pollockModel
+from pollock.parallel.pipeline_parallel.block import PipelineBlock
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel
 
 
-def get_input_output_pp_ranks(model: pollcokModel | DistributedDataParallel):
+def get_input_output_pp_ranks(model: pollockModel | DistributedDataParallel):
     if isinstance(model, DistributedDataParallel):
         input_pp_rank = model.module.input_pp_rank
         output_pp_rank = model.module.output_pp_rank

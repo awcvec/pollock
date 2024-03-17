@@ -4,7 +4,7 @@ Benchmarking script for the Llama-2-7b model
 
 import os
 
-from pollcok.config import (
+from pollock.config import (
     CheckpointsArgs,
     Config,
     DataArgs,
@@ -20,7 +20,7 @@ from pollcok.config import (
     TokenizerArgs,
     TokensArgs,
 )
-from pollcok.logging import human_format
+from pollock.logging import human_format
 
 # Config for a llama model with 6.74M parameters
 model_config = LlamaConfig()

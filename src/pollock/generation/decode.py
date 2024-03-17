@@ -5,21 +5,21 @@ from typing import TYPE_CHECKING, Generator, Iterable, List, Optional, Tuple, Un
 
 import torch
 
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.config import BenchArgs, GenerationArgs
-from pollcok.distributed import ProcessGroup, get_global_rank
-from pollcok.generation.generate_store import Store, attach_store
-from pollcok.generation.sampler import BasicSampler, GreedySampler, SamplerType, TopKSampler, TopPSampler
-from pollcok.helpers import log_throughput
-from pollcok.models.llama import LlamaModel
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.pipeline_parallel.block import get_min_max_rank
-from pollcok.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
-from pollcok.parallel.pipeline_parallel.p2p import P2PTensorMetaData, view_as_contiguous
-from pollcok.parallel.pipeline_parallel.state import PipelineEvalBatchState
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from pollcok.utils import get_untyped_storage
+from pollock import distributed as dist
+from pollock import logging
+from pollock.config import BenchArgs, GenerationArgs
+from pollock.distributed import ProcessGroup, get_global_rank
+from pollock.generation.generate_store import Store, attach_store
+from pollock.generation.sampler import BasicSampler, GreedySampler, SamplerType, TopKSampler, TopPSampler
+from pollock.helpers import log_throughput
+from pollock.models.llama import LlamaModel
+from pollock.parallel import ParallelContext
+from pollock.parallel.pipeline_parallel.block import get_min_max_rank
+from pollock.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
+from pollock.parallel.pipeline_parallel.p2p import P2PTensorMetaData, view_as_contiguous
+from pollock.parallel.pipeline_parallel.state import PipelineEvalBatchState
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.utils import get_untyped_storage
 
 if TYPE_CHECKING:
     try:

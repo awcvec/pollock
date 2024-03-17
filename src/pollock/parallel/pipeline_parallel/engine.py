@@ -2,16 +2,16 @@ from abc import ABC, abstractmethod
 from typing import Dict, Iterable, Optional, Union
 
 import torch
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.distributed import ProcessGroup
-from pollcok.logging import log_rank
-from pollcok.optim.gradient_accumulator import GradientAccumulator
-from pollcok.parallel.data_parallel.utils import ddp_trigger_sync_in_bwd
-from pollcok.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
-from pollcok.parallel.pipeline_parallel.state import PipelineTrainBatchState
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from pollcok.utils import ContextManagers
+from pollock import distributed as dist
+from pollock import logging
+from pollock.distributed import ProcessGroup
+from pollock.logging import log_rank
+from pollock.optim.gradient_accumulator import GradientAccumulator
+from pollock.parallel.data_parallel.utils import ddp_trigger_sync_in_bwd
+from pollock.parallel.pipeline_parallel.context_manager import attach_pipeline_state_to_model
+from pollock.parallel.pipeline_parallel.state import PipelineTrainBatchState
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.utils import ContextManagers
 from torch import nn as torch_nn
 from torch.nn.parallel import DistributedDataParallel
 

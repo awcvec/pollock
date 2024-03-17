@@ -6,7 +6,7 @@ from config import MambaModelConfig
 from mamba import MambaForTraining
 from trainer import MambaTrainer
 
-from pollcok import logging
+from pollock import logging
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 

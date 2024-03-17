@@ -3,11 +3,11 @@ import os
 import pytest
 import torch
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from pollcok import distributed as dist
-from pollcok.distributed import get_global_rank
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from pollcok.parallel.tensor_parallel.nn import (
+from pollock import distributed as dist
+from pollock.distributed import get_global_rank
+from pollock.parallel import ParallelContext
+from pollock.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollock.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
     TensorParallelEmbedding,
     TensorParallelRowLinear,

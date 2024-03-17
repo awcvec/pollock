@@ -7,13 +7,13 @@ import torch
 from torch.utils.data import BatchSampler, DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.config import Config
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from pollcok.random import set_random_seed
-from pollcok.sanity_checks import (
+from pollock import distributed as dist
+from pollock import logging
+from pollock.config import Config
+from pollock.parallel import ParallelContext
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.random import set_random_seed
+from pollock.sanity_checks import (
     assert_fail_except_rank_with,
     assert_tensor_synced_across_pg,
 )

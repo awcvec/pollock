@@ -1,5 +1,5 @@
 """
-pollcok training script.
+pollock training script.
 
 Usage:
 ```
@@ -9,20 +9,20 @@ torchrun --nproc_per_node=8 run_train.py --config-file examples/config_tiny_llam
 """
 import argparse
 
-from pollcok import logging
-from pollcok.config import (
+from pollock import logging
+from pollock.config import (
     PretrainDatasetsArgs,
 )
-from pollcok.dataloader import (
+from pollock.dataloader import (
     clm_process,
     dummy_infinite_data_generator,
     get_datasets,
     get_train_dataloader,
 )
-from pollcok.logging import log_rank
-from pollcok.parallel.pipeline_parallel.utils import get_input_output_pp_ranks
-from pollcok.trainer import DistributedTrainer
-from pollcok.utils import (
+from pollock.logging import log_rank
+from pollock.parallel.pipeline_parallel.utils import get_input_output_pp_ranks
+from pollock.trainer import DistributedTrainer
+from pollock.utils import (
     main_rank_first,
 )
 

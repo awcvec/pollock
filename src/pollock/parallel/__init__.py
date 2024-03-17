@@ -1,2 +1,2 @@
 # flake8: noqa
-from pollcok.parallel.context import ParallelContext
+from pollock.parallel.context import ParallelContext

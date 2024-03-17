@@ -1,6 +1,6 @@
 import pytest
 import torch
-from pollcok.fp8 import DTypes, FP8Linear, FP8Parameter, FP8Tensor
+from pollock.fp8 import DTypes, FP8Linear, FP8Parameter, FP8Tensor
 from torch import nn
 from torch.optim import Adam
 

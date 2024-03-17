@@ -1,6 +1,6 @@
 import torch
-from pollcok.fp8 import DTypes, FP8Parameter, FP8Tensor
-from pollcok.fp8.meta import FP8Meta
+from pollock.fp8 import DTypes, FP8Parameter, FP8Tensor
+from pollock.fp8.meta import FP8Meta
 
 
 def test_create_fp8_parameter():

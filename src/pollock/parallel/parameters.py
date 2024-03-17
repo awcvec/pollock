@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 import torch
 from torch import nn
 
-from pollcok import distributed as dist
-from pollcok import logging
+from pollock import distributed as dist
+from pollock import logging
 
 if TYPE_CHECKING:
-    from pollcok.models import pollcokModel
+    from pollock.models import pollockModel
 
 logger = logging.get_logger(__name__)
 
@@ -92,10 +92,10 @@ class ShardedInfo:
         return set(dist.get_global_ranks(parallel_context.dp_pg)).issubset(set(self.global_ranks))
 
 
-class pollcokParameter(nn.Parameter):
-    """Base class for all parameters in pollcokmodels
+class pollockParameter(nn.Parameter):
+    """Base class for all parameters in pollockmodels
 
-    A pollcokParameter can have specific properties:
+    A pollockParameter can have specific properties:
      - sharded: the parameter is considered to be `sharded` across multiple devices
      - tied: the parameter is considered to be `tied` with other parameters. We sum gradients over those.
 
@@ -107,29 +107,29 @@ class pollcokParameter(nn.Parameter):
         - Even if some weights don't need their grads to be reduced, it's still useful for them to be marked as tied. For example, current serialization format requires to mark them correctly.
     """
 
-    pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME = "__pollcok_metadata__"
-    pollcok_PARAMETER_METADATA_TIED_KEY = "tied"
-    pollcok_PARAMETER_METADATA_SHARDED_KEY = "sharded"
+    pollock_PARAMETER_METADATA_ATTRIBUTE_NAME = "__pollock_metadata__"
+    pollock_PARAMETER_METADATA_TIED_KEY = "tied"
+    pollock_PARAMETER_METADATA_SHARDED_KEY = "sharded"
 
     def __new__(cls, tensor: torch.Tensor, requires_grad: bool = True):
         param = nn.Parameter.__new__(cls, data=tensor.data.detach(), requires_grad=requires_grad)
 
-        if isinstance(tensor, pollcokParameter):
+        if isinstance(tensor, pollockParameter):
             # Check that we don't inherit a weird class
             # We copy in order not to make in-place operation
-            assert type(tensor) == pollcokParameter
+            assert type(tensor) == pollockParameter
             setattr(
                 param,
-                cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME,
-                getattr(tensor, cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME).copy(),
+                cls.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME,
+                getattr(tensor, cls.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME).copy(),
             )
         else:
-            setattr(param, cls.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME, {})
+            setattr(param, cls.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME, {})
 
         return param
 
     def _set_metadata(self, key: str, value: Any):
-        metadata = getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)
+        metadata = getattr(self, self.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME)
 
         if key in metadata:
             raise ValueError(
@@ -143,22 +143,22 @@ class pollcokParameter(nn.Parameter):
         name: str,
         global_ranks: Tuple[int, ...],
         reduce_op: Optional[dist.ReduceOp],
-        root_module: "pollcokModel",
+        root_module: "pollockModel",
     ):
         self._set_metadata(
-            self.pollcok_PARAMETER_METADATA_TIED_KEY,
+            self.pollock_PARAMETER_METADATA_TIED_KEY,
             TiedInfo(name=name, global_ranks=global_ranks, reduce_op=reduce_op, root_module=root_module),
         )
 
     def get_tied_info(self) -> TiedInfo:
-        return getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)[
-            self.pollcok_PARAMETER_METADATA_TIED_KEY
+        return getattr(self, self.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME)[
+            self.pollock_PARAMETER_METADATA_TIED_KEY
         ]
 
     @property
     def is_tied(self) -> bool:
-        return self.pollcok_PARAMETER_METADATA_TIED_KEY in getattr(
-            self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME
+        return self.pollock_PARAMETER_METADATA_TIED_KEY in getattr(
+            self, self.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME
         )
 
     def mark_as_sharded(
@@ -168,7 +168,7 @@ class pollcokParameter(nn.Parameter):
         unsharded_shape: Tuple[int, ...],
     ):
         self._set_metadata(
-            self.pollcok_PARAMETER_METADATA_SHARDED_KEY,
+            self.pollock_PARAMETER_METADATA_SHARDED_KEY,
             ShardedInfo(
                 global_ranks=global_ranks,
                 local_global_slices_pairs=local_global_slices_pairs,
@@ -177,25 +177,25 @@ class pollcokParameter(nn.Parameter):
         )
 
     def get_sharded_info(self) -> ShardedInfo:
-        return getattr(self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME)[
-            self.pollcok_PARAMETER_METADATA_SHARDED_KEY
+        return getattr(self, self.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME)[
+            self.pollock_PARAMETER_METADATA_SHARDED_KEY
         ]
 
     @property
     def is_sharded(self) -> bool:
-        return self.pollcok_PARAMETER_METADATA_SHARDED_KEY in getattr(
-            self, self.pollcok_PARAMETER_METADATA_ATTRIBUTE_NAME
+        return self.pollock_PARAMETER_METADATA_SHARDED_KEY in getattr(
+            self, self.pollock_PARAMETER_METADATA_ATTRIBUTE_NAME
         )
 
 
 def sanity_check(root_module: nn.Module):
-    """Makes sure that the module is in pollcokformat
+    """Makes sure that the module is in pollockformat
 
     Format:
-     - all parameters are `pollcokParameter`, this allows us to add metadata to a parameter.
+     - all parameters are `pollockParameter`, this allows us to add metadata to a parameter.
     """
     for name, param in root_module.named_parameters():
-        if not isinstance(param, pollcokParameter):
+        if not isinstance(param, pollockParameter):
             raise ValueError(
-                f"pollcokrequires model to be in pollcokformat, ie all parameters are required to be a pollcokParameter. {name} isn't."
+                f"pollockrequires model to be in pollockformat, ie all parameters are required to be a pollockParameter. {name} isn't."
             )

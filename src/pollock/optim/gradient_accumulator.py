@@ -7,10 +7,10 @@ from typing import Callable, Dict, Iterator, Optional, Tuple
 import torch
 from torch.distributed import GradBucket
 
-import pollcok.distributed as dist
-from pollcok import logging
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.utils import get_untyped_storage, tensor_from_untyped_storage
+import pollock.distributed as dist
+from pollock import logging
+from pollock.parallel.parameters import pollockParameter
+from pollock.utils import get_untyped_storage, tensor_from_untyped_storage
 
 logger = logging.get_logger(__name__)
 
@@ -19,7 +19,7 @@ class GradientAccumulator(ABC):
     fp32_grads_allreduce_handle: Optional[torch.futures.Future]
 
     @abstractmethod
-    def __init__(self, named_parameters: Iterator[Tuple[str, pollcokParameter]]):
+    def __init__(self, named_parameters: Iterator[Tuple[str, pollockParameter]]):
         ...
 
     @abstractmethod
@@ -39,7 +39,7 @@ class GradientAccumulator(ABC):
         ...
 
     @abstractmethod
-    def get_parameter_for_optimizer(self, name: str) -> pollcokParameter:
+    def get_parameter_for_optimizer(self, name: str) -> pollockParameter:
         ...
 
     @abstractmethod
@@ -58,8 +58,8 @@ class GradientAccumulator(ABC):
 class FP32GradientAccumulator(GradientAccumulator):
     def __init__(
         self,
-        named_parameters: Iterator[Tuple[str, pollcokParameter]],
-        grad_buckets_named_params: Optional[Iterator[Tuple[str, pollcokParameter]]] = None,
+        named_parameters: Iterator[Tuple[str, pollockParameter]],
+        grad_buckets_named_params: Optional[Iterator[Tuple[str, pollockParameter]]] = None,
     ):
         """Create a gradient accumulator that will accumulate gradients in fp32.
 
@@ -156,7 +156,7 @@ class FP32GradientAccumulator(GradientAccumulator):
 
     @staticmethod
     def build_grad_buffers(
-        named_parameters: Iterator[Tuple[str, pollcokParameter]],
+        named_parameters: Iterator[Tuple[str, pollockParameter]],
     ) -> Tuple[Dict[str, Dict], torch.Tensor]:
         """Builds grad buffers for all model's parameters, independently of ZeRO sharding
 
@@ -209,7 +209,7 @@ class FP32GradientAccumulator(GradientAccumulator):
 
         return result
 
-    def _accumulate_grad(self, name: str, half_param: pollcokParameter) -> None:
+    def _accumulate_grad(self, name: str, half_param: pollockParameter) -> None:
         """Accumulate grad in fp32 and set the fp32 grad to the fp32 grad buffer, so that optimizer can update fp32 weights afterwards"""
         assert half_param.grad is not None, f"Expected param {name} to have gradient."
         fp32_grad = self.get_grad_buffer(name=name)
@@ -275,7 +275,7 @@ class FP32GradientAccumulator(GradientAccumulator):
         # in case where self.parameters and self.fp32_grad_buffers are not the same (e.g we want to accumulate all DPs grads, and only sync at sync step)
         self._contiguous_fp32_grad_buffer.zero_()
 
-    def get_parameter_for_optimizer(self, name: str) -> pollcokParameter:
+    def get_parameter_for_optimizer(self, name: str) -> pollockParameter:
         return self.parameters[name]["fp32"]
 
     def get_grad_buffer(self, name: str) -> torch.Tensor:

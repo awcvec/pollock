@@ -2,17 +2,17 @@ from math import ceil
 from typing import Union
 
 import torch
-from pollcok import distributed as dist
-from pollcok.models import init_on_device_and_dtype
-from pollcok.optim.base import BaseOptimizer
-from pollcok.optim.named_optimizer import NamedOptimizer
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.pipeline_parallel.block import PipelineBlock
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
-from pollcok.parallel.tied_parameters import tie_parameters
-from pollcok.parallel.utils import initial_sync
+from pollock import distributed as dist
+from pollock.models import init_on_device_and_dtype
+from pollock.optim.base import BaseOptimizer
+from pollock.optim.named_optimizer import NamedOptimizer
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.pipeline_parallel.block import PipelineBlock
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.parallel.tied_parameters import tie_parameters
+from pollock.parallel.utils import initial_sync
 from torch import nn
 from torch.nn.parallel import DistributedDataParallel
 
@@ -78,7 +78,7 @@ def init_dummy_model(parallel_context: ParallelContext, dtype: torch.dtype = tor
 
     # Sync all parameters that have the same name and that are not sharded across TP.
     for name, param in model.named_parameters():
-        if isinstance(param, pollcokParameter) and param.is_sharded:
+        if isinstance(param, pollockParameter) and param.is_sharded:
             continue
         shared_weights = [
             (

@@ -1,14 +1,14 @@
 from typing import Any, Callable, Dict, Optional, Set, Tuple, Union
 
 import torch
-from pollcok import distributed as dist
-from pollcok.parallel.pipeline_parallel.functional import (
+from pollock import distributed as dist
+from pollock.parallel.pipeline_parallel.functional import (
     recv_from_pipeline_state_buffer,
     send_to_pipeline_state_buffer,
 )
-from pollcok.parallel.pipeline_parallel.p2p import P2P, BatchTensorSendRecvState
-from pollcok.parallel.pipeline_parallel.state import PipelineBatchState, PipelineTrainBatchState
-from pollcok.parallel.pipeline_parallel.tensor_pointer import TensorPointer
+from pollock.parallel.pipeline_parallel.p2p import P2P, BatchTensorSendRecvState
+from pollock.parallel.pipeline_parallel.state import PipelineBatchState, PipelineTrainBatchState
+from pollock.parallel.pipeline_parallel.tensor_pointer import TensorPointer
 from torch import nn
 
 

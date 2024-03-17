@@ -1,4 +1,4 @@
 # flake8: noqa
-from pollcok.serialize.main import *
-from pollcok.serialize.optimizer import *
-from pollcok.serialize.random import *
+from pollock.serialize.main import *
+from pollock.serialize.optimizer import *
+from pollock.serialize.random import *

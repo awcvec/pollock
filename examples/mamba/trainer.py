@@ -3,28 +3,28 @@ from typing import Optional, Type, Union
 from config import ExistingCheckpointInit, MambaConfig, MambaInit
 from torch.nn.parallel import DistributedDataParallel
 
-from pollcok import logging
-from pollcok.trainer import DistributedTrainer
+from pollock import logging
+from pollock.trainer import DistributedTrainer
 
 logger = logging.get_logger(__name__)
 
-from pollcok import distributed as dist
-from pollcok.config import ParallelismArgs
-from pollcok.logging import log_rank
-from pollcok.models import pollcokModel
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.pipeline_parallel.utils import get_pp_rank_of
-from pollcok.parallel.tensor_parallel.nn import (
+from pollock import distributed as dist
+from pollock.config import ParallelismArgs
+from pollock.logging import log_rank
+from pollock.models import pollockModel
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.pipeline_parallel.utils import get_pp_rank_of
+from pollock.parallel.tensor_parallel.nn import (
     TensorParallelLinearMode,
     TensorParallelRowLinear,
 )
-from pollcok.parallel.tied_parameters import (
+from pollock.parallel.tied_parameters import (
     create_pg_for_tied_weights,
     get_tied_id_to_param,
     tie_parameters,
 )
-from pollcok.serialize import load_weights, parse_ckpt_path
+from pollock.serialize import load_weights, parse_ckpt_path
 
 
 class MambaTrainer(DistributedTrainer):
@@ -33,14 +33,14 @@ class MambaTrainer(DistributedTrainer):
         config_or_config_file: Union[MambaConfig, str],
         config_class: Type[MambaConfig] = MambaConfig,
         model_config_class: Optional[Type] = None,
-        model_class: Type[pollcokModel] = None,
+        model_class: Type[pollockModel] = None,
     ):
         assert config_class == MambaConfig
         super().__init__(config_or_config_file, config_class, model_config_class, model_class)
 
     def _mark_tied_parameters(
         self,
-        model: pollcokModel,
+        model: pollockModel,
         parallel_context: ParallelContext,
         parallel_config: Optional[ParallelismArgs] = None,
     ):
@@ -77,7 +77,7 @@ class MambaTrainer(DistributedTrainer):
             for param_name, param in module.named_parameters(recurse=False):
                 name = f"{module_name}.{param_name}"
 
-                if isinstance(param, pollcokParameter) and (param.is_sharded or param.is_tied):
+                if isinstance(param, pollockParameter) and (param.is_sharded or param.is_tied):
                     continue
 
                 if isinstance(module, TensorParallelRowLinear) and "bias" == param_name:
@@ -109,7 +109,7 @@ class MambaTrainer(DistributedTrainer):
 
         create_pg_for_tied_weights(root_module=model, parallel_context=parallel_context)
 
-    def _load_model_checkpoint(self, model: pollcokModel) -> pollcokModel:
+    def _load_model_checkpoint(self, model: pollockModel) -> pollockModel:
         unwrapped_model = model.module if isinstance(model, DistributedDataParallel) else model
 
         # Load or initialize model weights

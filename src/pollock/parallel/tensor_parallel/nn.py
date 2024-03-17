@@ -17,26 +17,26 @@ from typing import Optional, Tuple
 import torch
 from torch import nn
 
-from pollcok import distributed as dist
-from pollcok.distributed import get_global_rank
-from pollcok.parallel.parameters import pollcokParameter
-from pollcok.parallel.sharded_parameters import (
+from pollock import distributed as dist
+from pollock.distributed import get_global_rank
+from pollock.parallel.parameters import pollockParameter
+from pollock.parallel.sharded_parameters import (
     SplitConfig,
     create_sharded_parameter_from_config,
     mark_all_parameters_in_module_as_sharded,
 )
-from pollcok.parallel.tensor_parallel.distributed_differentiable_primitives import (
+from pollock.parallel.tensor_parallel.distributed_differentiable_primitives import (
     differentiable_all_gather,
     differentiable_all_reduce_sum,
     differentiable_identity,
     differentiable_reduce_scatter_sum,
 )
-from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from pollcok.parallel.tensor_parallel.functional import (
+from pollock.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollock.parallel.tensor_parallel.functional import (
     column_linear,
     row_linear,
 )
-from pollcok.parallel.tied_parameters import create_tied_parameter
+from pollock.parallel.tied_parameters import create_tied_parameter
 
 
 class TensorParallelColumnLinear(nn.Linear):
@@ -146,7 +146,7 @@ class TensorParallelRowLinear(nn.Linear):
         for name, param in list(self.named_parameters()):
             if name == "bias":
                 # `bias` only exists in rank 0 because it's not sharded
-                new_param = pollcokParameter(tensor=param)
+                new_param = pollockParameter(tensor=param)
             else:
                 new_param = create_sharded_parameter_from_config(
                     parameter=param,

@@ -5,28 +5,28 @@ import pytest
 import torch
 from helpers.dummy import DummyModel, dummy_infinite_data_loader
 from helpers.utils import available_gpus, init_distributed, rerun_if_address_is_in_use
-from pollcok import distributed as dist
-from pollcok.models import init_on_device_and_dtype
-from pollcok.optim.clip_grads import clip_grad_norm
-from pollcok.optim.gradient_accumulator import (
+from pollock import distributed as dist
+from pollock.models import init_on_device_and_dtype
+from pollock.optim.clip_grads import clip_grad_norm
+from pollock.optim.gradient_accumulator import (
     FP32GradientAccumulator,
 )
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter, sanity_check
-from pollcok.parallel.pipeline_parallel.engine import (
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter, sanity_check
+from pollock.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
 )
-from pollcok.parallel.pipeline_parallel.p2p import P2P
-from pollcok.parallel.tensor_parallel.enum import TensorParallelLinearMode
-from pollcok.parallel.tensor_parallel.nn import (
+from pollock.parallel.pipeline_parallel.p2p import P2P
+from pollock.parallel.tensor_parallel.enum import TensorParallelLinearMode
+from pollock.parallel.tensor_parallel.nn import (
     TensorParallelColumnLinear,
 )
-from pollcok.parallel.tied_parameters import (
+from pollock.parallel.tied_parameters import (
     sync_tied_weights_gradients,
     tie_parameters,
 )
-from pollcok.parallel.utils import initial_sync
-from pollcok.sanity_checks import assert_tensor_synced_across_pg
+from pollock.parallel.utils import initial_sync
+from pollock.sanity_checks import assert_tensor_synced_across_pg
 from torch import nn
 
 
@@ -67,8 +67,8 @@ def _test_clip_grads_with_pp(parallel_context: ParallelContext, norm_type: float
 
     for module in model.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", pollcokParameter(module.weight))
-            setattr(module, "bias", pollcokParameter(module.bias))
+            setattr(module, "weight", pollockParameter(module.weight))
+            setattr(module, "bias", pollockParameter(module.bias))
 
     # synchronize weights
     if has_reference_model:
@@ -379,10 +379,10 @@ def _test_clip_grads_tied_weights(parallel_context: ParallelContext, norm_type: 
         weight = model.dense1.weight
         bias = model.dense1.bias
 
-    # Make sure that weight/bias are pollcokParameter and that they are tied
-    assert isinstance(weight, pollcokParameter)
+    # Make sure that weight/bias are pollockParameter and that they are tied
+    assert isinstance(weight, pollockParameter)
     assert weight.is_tied
-    assert isinstance(bias, pollcokParameter)
+    assert isinstance(bias, pollockParameter)
     assert bias.is_tied
 
     # Sync tied weights: basic assumption
@@ -475,8 +475,8 @@ def _test_clip_grads_fp32_accumulator(
 
     for module in model.modules():
         if isinstance(module, nn.Linear):
-            setattr(module, "weight", pollcokParameter(module.weight))
-            setattr(module, "bias", pollcokParameter(module.bias))
+            setattr(module, "weight", pollockParameter(module.weight))
+            setattr(module, "bias", pollockParameter(module.bias))
 
     # model goes to half precision
     model = model.to(half_precision)

@@ -4,10 +4,10 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import torch
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.logging import log_rank
-from pollcok.parallel.pipeline_parallel.p2p import P2P
+from pollock import distributed as dist
+from pollock import logging
+from pollock.logging import log_rank
+from pollock.parallel.pipeline_parallel.p2p import P2P
 
 logger = logging.get_logger(__name__)
 

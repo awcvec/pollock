@@ -9,15 +9,15 @@ from safetensors.torch import safe_open, save_file
 from torch import nn
 from tqdm import tqdm
 
-from pollcok import distributed as dist
-from pollcok import logging
-from pollcok.constants import CHECKPOINT_VERSION
-from pollcok.distributed import get_global_rank
-from pollcok.logging import log_rank
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.parameters import pollcokParameter, ShardedInfo, SlicesPair
-from pollcok.serialize.metadata import CheckpointMetadata, TensorMetadata, load_meta
-from pollcok.serialize.utils import (
+from pollock import distributed as dist
+from pollock import logging
+from pollock.constants import CHECKPOINT_VERSION
+from pollock.distributed import get_global_rank
+from pollock.logging import log_rank
+from pollock.parallel import ParallelContext
+from pollock.parallel.parameters import pollockParameter, ShardedInfo, SlicesPair
+from pollock.serialize.metadata import CheckpointMetadata, TensorMetadata, load_meta
+from pollock.serialize.utils import (
     ObjectType,
     extract_tp_pp_rank_from_shard_path,
     get_exp_tp_pp_rank_and_size_from,
@@ -55,7 +55,7 @@ def save_weights(model: nn.Module, parallel_context: ParallelContext, root_folde
             # TODO @nouamanetazi: Handle buffers
             param = None
 
-        if isinstance(param, pollcokParameter):
+        if isinstance(param, pollockParameter):
             metadata = {}
             if param.is_tied:
                 tied_info = param.get_tied_info()
@@ -112,7 +112,7 @@ def save_weights(model: nn.Module, parallel_context: ParallelContext, root_folde
                 )
                 raise e
         else:
-            raise NotImplementedError("Parameters are required to be pollcokParameter")
+            raise NotImplementedError("Parameters are required to be pollockParameter")
 
 
 class CheckpointVersionFromShardFileException(Exception):
@@ -229,7 +229,7 @@ def load_weights(
         except AttributeError:
             param = None
 
-        if isinstance(param, pollcokParameter):
+        if isinstance(param, pollockParameter):
             if param.is_tied:
                 tied_info = param.get_tied_info()
                 base_name = tied_info.get_full_name_from_module_id_to_prefix(module_id_to_prefix=module_id_to_prefix)
@@ -323,7 +323,7 @@ def load_weights(
                     raise ValueError(f"Unsupported checkpoint version {checkpoint_version}")
 
         else:
-            raise NotImplementedError(f"Parameters {param} should be a pollcokParameter")
+            raise NotImplementedError(f"Parameters {param} should be a pollockParameter")
 
     return param_shard_metadata
 
@@ -364,7 +364,7 @@ def get_checkpoint_paths_list(
         except AttributeError:
             param = None
 
-        if isinstance(param, pollcokParameter) or not only_list_current_process:
+        if isinstance(param, pollockParameter) or not only_list_current_process:
             if param.is_tied:
                 tied_info = param.get_tied_info()
                 base_name = tied_info.get_full_name_from_module_id_to_prefix(module_id_to_prefix=module_id_to_prefix)

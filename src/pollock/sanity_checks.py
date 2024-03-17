@@ -3,14 +3,14 @@ from typing import Callable, Optional
 
 import torch
 
-from pollcok import distributed as dist
-from pollcok import logging, optim
-from pollcok.config import Config
-from pollcok.logging import get_logger, log_rank
-from pollcok.models import pollcokModel
-from pollcok.optim.gradient_accumulator import GradientAccumulator
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.tied_parameters import get_tied_id_to_param
+from pollock import distributed as dist
+from pollock import logging, optim
+from pollock.config import Config
+from pollock.logging import get_logger, log_rank
+from pollock.models import pollockModel
+from pollock.optim.gradient_accumulator import GradientAccumulator
+from pollock.parallel import ParallelContext
+from pollock.parallel.tied_parameters import get_tied_id_to_param
 
 logger = get_logger(__name__)
 
@@ -56,7 +56,7 @@ def assert_fail_except_rank_with(exception_class, rank_exception, pg):
 def before_tbi_sanity_checks(
     config: Config,
     parallel_context: ParallelContext,
-    unwrapped_model: pollcokModel,
+    unwrapped_model: pollockModel,
     grad_accumulator: GradientAccumulator,
 ) -> None:
     if not config.general.ignore_sanity_checks:
@@ -103,7 +103,7 @@ def before_tbi_sanity_checks(
 def after_tbi_sanity_checks(
     config: Config,
     parallel_context: ParallelContext,
-    unwrapped_model: pollcokModel,
+    unwrapped_model: pollockModel,
     grad_accumulator: GradientAccumulator,
 ) -> None:
     if not config.general.ignore_sanity_checks:
@@ -141,7 +141,7 @@ def after_tbi_sanity_checks(
 def before_optim_step_sanity_checks(
     config: Config,
     parallel_context: ParallelContext,
-    unwrapped_model: pollcokModel,
+    unwrapped_model: pollockModel,
     grad_accumulator: GradientAccumulator,
 ) -> None:
     if not config.general.ignore_sanity_checks:
@@ -218,7 +218,7 @@ def before_optim_step_sanity_checks(
 def after_optim_step_sanity_checks(
     config: Config,
     parallel_context: ParallelContext,
-    unwrapped_model: pollcokModel,
+    unwrapped_model: pollockModel,
     grad_accumulator: GradientAccumulator,
 ) -> None:
     if not config.general.ignore_sanity_checks:

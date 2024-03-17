@@ -9,22 +9,22 @@ from helpers.utils import (
     is_dict_equal,
     rerun_if_address_is_in_use,
 )
-from pollcok import distributed as dist
-from pollcok.constants import CHECKPOINT_VERSION
-from pollcok.optim.gradient_accumulator import FP32GradientAccumulator
-from pollcok.optim.named_optimizer import NamedOptimizer
-from pollcok.optim.optimizer_from_gradient_accumulator import (
+from pollock import distributed as dist
+from pollock.constants import CHECKPOINT_VERSION
+from pollock.optim.gradient_accumulator import FP32GradientAccumulator
+from pollock.optim.named_optimizer import NamedOptimizer
+from pollock.optim.optimizer_from_gradient_accumulator import (
     OptimizerFromGradientAccumulator,
 )
-from pollcok.optim.zero import ZeroDistributedOptimizer
-from pollcok.parallel import ParallelContext
-from pollcok.parallel.pipeline_parallel.engine import (
+from pollock.optim.zero import ZeroDistributedOptimizer
+from pollock.parallel import ParallelContext
+from pollock.parallel.pipeline_parallel.engine import (
     AllForwardAllBackwardPipelineEngine,
 )
-from pollcok.parallel.sharded_parameters import SplitConfig, create_sharded_parameter_from_config
-from pollcok.parallel.tied_parameters import sync_tied_weights_gradients
-from pollcok.random import RandomStates, get_current_random_state, get_synced_random_state
-from pollcok.serialize import (
+from pollock.parallel.sharded_parameters import SplitConfig, create_sharded_parameter_from_config
+from pollock.parallel.tied_parameters import sync_tied_weights_gradients
+from pollock.random import RandomStates, get_current_random_state, get_synced_random_state
+from pollock.serialize import (
     load_optimizer,
     load_random_states,
     load_weights,
@@ -32,7 +32,7 @@ from pollcok.serialize import (
     save_random_states,
     save_weights,
 )
-from pollcok.serialize.metadata import TensorMetadata
+from pollock.serialize.metadata import TensorMetadata
 from torch.nn.parallel import DistributedDataParallel
 
 
