@@ -27,7 +27,7 @@ from pollock.utils import (
 )
 
 try:
-    from huggingface_hub import __version__ as hf_hub_version
+    from huggingface_hub  import __version__ as hf_hub_version
     from transformers import AutoTokenizer
     from transformers import __version__ as tf_version
 except ImportError:
